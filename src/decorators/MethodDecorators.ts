@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+import { assertDefined } from "../assertions";
 import MetadataFactory from "./MetadataFactory";
 
 export class MethodDecoratorFactories {
-  public static RunOnce: MetadataFactory<{ ran: boolean }>;
+  public static RunOnce?: MetadataFactory<{ ran: boolean }>;
 }
 
 /**
@@ -19,6 +20,8 @@ export const RunOnce = () => {
     const originalMethod = descriptor.value;
 
     descriptor.value = function (...args: unknown[]): unknown {
+      assertDefined(MethodDecoratorFactories.RunOnce);
+
       const metadataName = MethodDecoratorFactories.RunOnce.getNameFor(
         target,
         name

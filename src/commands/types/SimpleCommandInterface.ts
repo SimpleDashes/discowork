@@ -18,10 +18,12 @@ export default interface SimpleCommandInterface<A>
   /**
    * Provides the context to be passed for the {@link trigger} method.
    */
-  contextConstructor: () => ConstructorType<
-    [CommandContextOnlyInteractionAndClient],
-    CommandContext<A>
-  >;
+  contextConstructor: () =>
+    | ConstructorType<
+        [CommandContextOnlyInteractionAndClient],
+        CommandContext<A>
+      >
+    | undefined;
 
   /**
    * Provides the arguments to be passed for the {@link contextConstructor} arguments.

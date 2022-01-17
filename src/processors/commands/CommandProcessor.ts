@@ -16,7 +16,6 @@ import { Logger } from "../../container";
 import DiscordOptionHelper from "../../options/DiscordOptionHelper";
 import type IDiscordOption from "../../options/interfaces/IDiscordOption";
 import type SimpleCommandInterface from "../../commands/types/SimpleCommandInterface";
-import { RunOnce } from "../../decorators/MethodDecorators";
 import type { Interaction } from "discord.js";
 import OwnerPrecondition from "../../preconditions/implementations/OwnerPrecondition";
 import { PreconditionUtils, SetupPrecondition } from "../../preconditions";
@@ -27,12 +26,14 @@ import type CommandContext from "../../commands/types/CommandContext";
 import type { CommandContextOnlyInteractionAndClient } from "../../commands/types/CommandContext";
 import SimpleClient from "../../client/SimpleClient";
 import assert from "assert";
+import TypedEventEmitter from "../../events/TypedEventEmitter";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
 
-export default class CommandProcessor {
+export default class CommandProcessor extends TypedEventEmitter<"load"> {
   public static DEFAULT_COMMAND_PROCESSOR_OPTIONS: CommandProcessorOptions &
     Record<string, unknown> = {
+    rootDirectory: path.join("dist", "commands"),
     subCommandsDirectory: "subcommands",
     subCommandGroupsDirectory: "groups",
     wrapperDirectory: "wrapper",
@@ -56,28 +57,29 @@ export default class CommandProcessor {
   readonly #options: CommandProcessorOptions;
 
   public constructor(options: Partial<CommandProcessorOptions>) {
+    super();
+
     const { DEFAULT_COMMAND_PROCESSOR_OPTIONS } = CommandProcessor;
 
     const recordOptions = options as Record<string, unknown>;
-    for (const option in recordOptions) {
+    for (const option in DEFAULT_COMMAND_PROCESSOR_OPTIONS) {
       if (!recordOptions[option]) {
         recordOptions[option] = DEFAULT_COMMAND_PROCESSOR_OPTIONS[option];
       }
+      Logger.log(`command_processor option: ${recordOptions[option]}`);
     }
 
     this.#options = options as CommandProcessorOptions;
 
-    this.#directoryFactory = new DirectoryFactory(__dirname, [
+    this.#directoryFactory = new DirectoryFactory(this.#options.rootDirectory, [
       this.#options.wrapperDirectory,
     ]);
 
     SetupPrecondition.setup(new OwnerPrecondition(this.#options.ownerIDS));
   }
 
-  @RunOnce()
   public async loadCommands(): Promise<void> {
-    const commandDirectories: Directory[] =
-      await this.#directoryFactory.build();
+    const commandDirectories = await this.#directoryFactory.build();
 
     const commandLoader = new ClassLoader(
       Command as never,
@@ -131,6 +133,8 @@ export default class CommandProcessor {
         simpleCommand.options.push(o as never);
       });
     });
+
+    this.emit("load");
   }
 
   async #registerSubcommandOrSubcommandGroup<
@@ -294,11 +298,16 @@ export default class CommandProcessor {
       client: interaction.client,
     };
 
-    const executorContext = new (executorCommand.contextConstructor())(
-      baseContext
-    );
+    const contextConstructor = executorCommand.contextConstructor();
 
-    await executorContext.build();
+    const executorContext = contextConstructor
+      ? new contextConstructor(baseContext)
+      : (baseContext as CommandContext<unknown>);
+
+    if (contextConstructor) {
+      assert(executorContext instanceof contextConstructor);
+      await executorContext.build();
+    }
 
     const shouldExecuteCommand = async (
       command: BaseCommandInterface

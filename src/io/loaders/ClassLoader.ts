@@ -36,11 +36,16 @@ export default class ClassLoader<T> {
     const response: ClassLoaderResponse<T>[] = [];
     const dir = directory.Path;
 
-    const files = (
-      await fs.readdir(dir, {
-        withFileTypes: true,
-      })
-    ).filter((file) => file.isFile() && file.name.endsWith(this.#extension));
+    let files = [];
+    try {
+      files = (
+        await fs.readdir(dir, {
+          withFileTypes: true,
+        })
+      ).filter((file) => file.isFile() && file.name.endsWith(this.#extension));
+    } catch {
+      return [];
+    }
 
     for (const file of files) {
       const realPath = path.join(dir, file.name);
@@ -65,7 +70,7 @@ export default class ClassLoader<T> {
           directory,
           object,
         });
-        Logger.debug(`Imported a ${klass.name} at ${realPath}.`);
+        Logger.log(`Imported a ${klass.name} at ${realPath}.`);
       } else {
         Logger.error(
           `Failed to import a ${klass.name} at ${realPath} (wrong type)`

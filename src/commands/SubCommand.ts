@@ -9,10 +9,10 @@ export default abstract class SubCommand<A>
   implements SimpleCommandInterface<A>
 {
   public args!: A;
-  public abstract trigger: (context: CommandContext<A>) => Promise<void>;
-  public abstract contextConstructor: () => ConstructorType<
+  public abstract trigger(context: CommandContext<A>): Promise<void>;
+  public abstract contextConstructor(): ConstructorType<
     [CommandContextOnlyInteractionAndClient],
     CommandContext<A>
   >;
-  public abstract createArguments: () => A;
+  public abstract createArguments(): A;
 }

@@ -1,6 +1,7 @@
 import consola from "consola";
 import { Collection } from "discord.js";
 import { assertDefinedGet } from "../assertions";
+import { Logger } from "../container";
 import type ClassLoader from "../io/loaders/ClassLoader";
 import type Locale from "./Locale";
 import type LocaleResource from "./resources/LocaleResource";
@@ -52,10 +53,10 @@ export default abstract class Localizer<
     const response = await this.#resourceResolver.loadAll();
     const resources = response.map((r) => r.object);
     for (const resource of resources) {
-      consola.log(`Setting resource with locale: ${resource.locale}`);
+      Logger.log(`Setting resource with locale: ${resource.locale}`);
       this.#resources.set(resource.locale, resource);
     }
-    consola.log(`Setting default resource with locale: ${this.defaultLocale}`);
+    Logger.log(`Setting default resource with locale: ${this.defaultLocale}`);
     this.#defaultResource = assertDefinedGet(
       this.#resources.get(this.defaultLocale)
     );
@@ -81,7 +82,7 @@ export default abstract class Localizer<
 
     let resource = this.#resources.get(locale ?? this.defaultLocale);
     if (!resource) {
-      consola.error(`Locale not found: ${locale}`);
+      Logger.error(`Locale not found: ${locale}`);
       resource = this.#defaultResource;
     }
 
