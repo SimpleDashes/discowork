@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build && npm run start",
     "build": "tsc --build tsconfig.json",
-    "start": "node dist/example/ExampleBot.js"
+    "start": "node dist/example/index.js"
   },
   "author": "SimpleDashes",
   "license": "ISC",

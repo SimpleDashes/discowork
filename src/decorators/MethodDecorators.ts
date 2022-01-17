@@ -39,7 +39,7 @@ export const RunOnce = () => {
 
       MethodDecoratorFactories.RunOnce.setMetadata(metadataName, metadata);
 
-      return originalMethod(args);
+      return originalMethod.apply(this, ...args);
     };
   };
 };
