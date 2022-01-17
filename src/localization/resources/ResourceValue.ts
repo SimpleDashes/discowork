@@ -1,5 +1,5 @@
-import { Chance } from 'chance';
-import Localizer from '../Localizer';
+import { Chance } from "chance";
+import Localizer from "../Localizer";
 
 class ResourceValue<A extends string = never> {
   static #CHANCE = Chance();
@@ -16,7 +16,7 @@ class ResourceValue<A extends string = never> {
    */
   public get Value(): string {
     const response = this.#builder(this.#record);
-    return typeof response === 'string'
+    return typeof response === "string"
       ? response
       : ResourceValue.#CHANCE.pickone(response);
   }

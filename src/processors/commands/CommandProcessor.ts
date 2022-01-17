@@ -126,9 +126,9 @@ export default class CommandProcessor {
     ];
 
     allSimpleCommands.forEach((simpleCommand) => {
+      simpleCommand.args = simpleCommand.createArguments();
       this.#loopCommandArguments(simpleCommand, (_k, o) => {
         simpleCommand.options.push(o as never);
-        simpleCommand.args = simpleCommand.createArguments();
       });
     });
   }
