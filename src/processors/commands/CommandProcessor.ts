@@ -27,12 +27,7 @@ import type { CommandContextOnlyInteractionAndClient } from "../../commands/type
 import SimpleClient from "../../client/SimpleClient";
 import assert from "assert";
 import TypedEventEmitter from "../../events/TypedEventEmitter";
-import {
-  MethodDecoratorFactories,
-  RunOnce,
-} from "../../decorators/MethodDecorators";
-import TypedReflect from "../../reflect/TypedReflect";
-import { assertDefinedGet } from "../../assertions";
+import { RunOnce } from "../../decorators/MethodDecorators";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
 

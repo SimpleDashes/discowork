@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import "reflect-metadata";
 
-import { assertDefined } from "../assertions";
 import MetadataFactory from "./MetadataFactory";
 
 export class MethodDecoratorFactories {
-  public static readonly RunOnce: MetadataFactory<{ ran: boolean }> =
-    new MetadataFactory("run_once_decorator_");
+  public static readonly RunOnce: MetadataFactory<{ ran: true }> =
+    new MetadataFactory();
 }
 
 /**
@@ -20,14 +19,10 @@ export const RunOnce = () => {
     const originalMethod = descriptor.value;
 
     descriptor.value = function (...args: unknown[]): unknown {
-      assertDefined(MethodDecoratorFactories.RunOnce);
-
-      const metadataName = MethodDecoratorFactories.RunOnce.getNameFor(
+      let metadata = MethodDecoratorFactories.RunOnce.getMetadataFromTarget(
         target,
         name
       );
-
-      let metadata = MethodDecoratorFactories.RunOnce.getMetadata(metadataName);
 
       if (metadata?.ran) {
         throw `The method: ${name} on class ${target.constructor.name} should only be called once.`;
@@ -37,7 +32,11 @@ export const RunOnce = () => {
         ran: true,
       };
 
-      MethodDecoratorFactories.RunOnce.setMetadata(metadataName, metadata);
+      MethodDecoratorFactories.RunOnce.setMetadataFromTarget(
+        target,
+        name,
+        metadata
+      );
 
       return originalMethod.apply(this, ...args);
     };
