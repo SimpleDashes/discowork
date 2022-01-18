@@ -27,7 +27,7 @@ import type { CommandContextOnlyInteractionAndClient } from "../../commands/type
 import SimpleClient from "../../client/SimpleClient";
 import assert from "assert";
 import TypedEventEmitter from "../../events/TypedEventEmitter";
-import { RunOnce } from "../../decorators/MethodDecorators";
+import { RunOnce, RunOnceWrapper } from "../../decorators/MethodDecorators";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
 
@@ -130,7 +130,7 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
     ];
 
     allSimpleCommands.forEach((simpleCommand) => {
-      // TODO USE REFLECTION TO MAKE SURE THAT CREATEARGUMENTS ON THE SIMPLECOMMAND CAN ONLY BE EXECUTED ONCE.
+      RunOnceWrapper.decorateMethod(simpleCommand, "createArguments");
       simpleCommand.args = simpleCommand.createArguments();
       this.#loopCommandArguments(simpleCommand, (_k, o) => {
         simpleCommand.options.push(o as never);
