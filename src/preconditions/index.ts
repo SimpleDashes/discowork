@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import type { PermissionResolvable } from "discord.js";
 import type CommandPrecondition from "./CommandPrecondition";
 import GuildPermissionsPreconditions from "./implementations/GuildPermissionsPreconditions";
@@ -79,7 +77,7 @@ function SetPreconditions(...preconditions: CommandPrecondition[]) {
   return (
     target: ConstructorType<[...unknown[]], BaseCommandInterface>
   ): void => {
-    const prototype = target.prototype as CommandWithPreconditions;
+    const prototype = target.prototype as unknown as CommandWithPreconditions;
     prototype.preconditions ??= [];
 
     const maybeGuildPrecondition = preconditions.find(

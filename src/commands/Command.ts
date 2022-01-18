@@ -16,6 +16,5 @@ export default abstract class Command<A>
         CommandContext<A>
       >
     | undefined;
-
   public abstract createArguments(): A;
 }

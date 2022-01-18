@@ -4,14 +4,14 @@ import { assertDefined } from "../assertions";
 import MetadataFactory from "./MetadataFactory";
 
 export class MethodDecoratorFactories {
-  public static RunOnce?: MetadataFactory<{ ran: boolean }>;
+  public static readonly RunOnce: MetadataFactory<{ ran: boolean }> =
+    new MetadataFactory("run_once_decorator_");
 }
 
 /**
  * A decorator that ensures that a class method can only be run once.
  */
 export const RunOnce = () => {
-  MethodDecoratorFactories.RunOnce = new MetadataFactory("run_once_decorator_");
   return <T extends object>(
     target: T,
     name: keyof T,

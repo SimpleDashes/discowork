@@ -28,4 +28,8 @@ export default class MetadataFactory<M> {
   public getMetadataFromTarget<T>(target: T, name: keyof T): M | undefined {
     return this.getMetadata(this.getNameFor(target, name));
   }
+
+  public setMetadataFromTarget<T>(target: T, name: keyof T, metadata: M): void {
+    this.setMetadata(this.getNameFor(target, name), metadata);
+  }
 }

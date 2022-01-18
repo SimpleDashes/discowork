@@ -45,18 +45,17 @@ export default class SimpleClient
   }
 
   public async login(token?: string): Promise<string> {
-    const response = await super.login(this.information.token ?? token);
+    const loadedCommandsMeta =
+      MethodDecoratorFactories.RunOnce.getMetadataFromTarget(
+        this.commandProcessor,
+        "loadCommands"
+      );
 
-    this.on("ready", async () => {
-      const loadedCommandsMeta =
-        MethodDecoratorFactories.RunOnce?.getMetadataFromTarget(
-          this.commandProcessor,
-          "loadCommands"
-        );
-      if (!loadedCommandsMeta?.ran) {
-        await this.commandProcessor.loadCommands();
-      }
-    });
+    if (!loadedCommandsMeta?.ran) {
+      await this.commandProcessor.loadCommands();
+    }
+
+    const response = await super.login(this.information.token ?? token);
 
     this.on("interactionCreate", async (interaction) => {
       await this.commandProcessor.processCommand(interaction);
