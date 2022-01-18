@@ -1,4 +1,3 @@
-import consola from "consola";
 import { Collection } from "discord.js";
 import { assertDefinedGet } from "../assertions";
 import { Logger } from "../container";

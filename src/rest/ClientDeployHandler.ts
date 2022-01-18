@@ -10,7 +10,7 @@ export default class ClientDeployHandler extends DeployHandler {
   public constructor(client: SimpleClient, debug: boolean) {
     super(
       assertDefinedGet(client.user).id,
-      assertDefinedGet(client.information.developmentGuild),
+      assertDefinedGet(client.options.developmentGuild),
       assertDefinedGet(client.token),
       client.commandProcessor,
       debug
@@ -36,18 +36,16 @@ export default class ClientDeployHandler extends DeployHandler {
       return;
     }
 
-    let commandReceiver = null;
+    let path = null;
     if (this.debug) {
-      commandReceiver = guild?.commands ?? interaction?.guild?.commands;
-      if (!commandReceiver) {
+      path = guild?.commands ?? interaction?.guild?.commands;
+      if (!path) {
         return;
       }
     } else {
-      commandReceiver = this.#simpleClient.application?.commands;
+      path = this.#simpleClient.application?.commands;
     }
 
-    await commandReceiver?.create(
-      command.toJSON() as ApplicationCommandDataResolvable
-    );
+    await path?.create(command.toJSON() as ApplicationCommandDataResolvable);
   }
 }

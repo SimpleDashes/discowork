@@ -8,8 +8,8 @@ dotenv.config();
 const bot = new SimpleClient({
   intents: ["GUILDS"],
   rootDirectory: path.join("dist", "example", "commands"),
-  ENV_DEVELOPMENT_SERVER: "DEV_GUILD",
-  ENV_TOKEN_VAR: "TOKEN",
+  developmentGuild: process.env["DEV_GUILD"],
+  token: process.env["TOKEN"],
 });
 
 const main = async (): Promise<void> => {

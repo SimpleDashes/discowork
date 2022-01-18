@@ -4,7 +4,6 @@ import { MethodDecoratorFactories } from "../decorators/MethodDecorators";
 import type TypedEventEmitter from "../events/TypedEventEmitter";
 import CommandProcessor from "../processors/commands/CommandProcessor";
 import ClientDeployHandler from "../rest/ClientDeployHandler";
-import type SimpleClientInformation from "./SimpleClientInformation";
 import type SimpleClientOptions from "./SimpleClientOptions";
 
 export default class SimpleClient
@@ -12,8 +11,6 @@ export default class SimpleClient
   implements TypedEventEmitter<keyof ClientEvents>
 {
   public readonly commandProcessor: CommandProcessor;
-  public readonly information: SimpleClientInformation;
-
   public override readonly options: ClientOptions &
     Partial<SimpleClientOptions>;
 
@@ -36,15 +33,9 @@ export default class SimpleClient
 
     this.options = options;
     this.commandProcessor = new CommandProcessor(options);
-
-    this.information = {
-      owners: this.options.ownerIDS ?? [],
-      token: process.env[this.options.ENV_TOKEN_VAR ?? ""],
-      developmentGuild: process.env[this.options.ENV_DEVELOPMENT_SERVER ?? ""],
-    };
   }
 
-  public async login(token?: string): Promise<string> {
+  public override async login(token?: string): Promise<string> {
     const loadedCommandsMeta =
       MethodDecoratorFactories.RunOnce.getMetadataFromTarget(
         this.commandProcessor,
@@ -55,7 +46,7 @@ export default class SimpleClient
       await this.commandProcessor.loadCommands();
     }
 
-    const response = await super.login(this.information.token ?? token);
+    const response = await super.login(this.options.token ?? token);
 
     this.on("interactionCreate", async (interaction) => {
       await this.commandProcessor.processCommand(interaction);

@@ -53,7 +53,7 @@ abstract class MethodDecorator {
 }
 
 export class RunOnceWrapper extends MethodDecorator {
-  public static internalDecorate<T extends object>(
+  public static override internalDecorate<T extends object>(
     target: T,
     name: keyof T
   ): void {
