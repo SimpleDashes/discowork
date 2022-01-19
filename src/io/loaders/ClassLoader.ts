@@ -51,6 +51,10 @@ export default class ClassLoader<T> {
       const realPath = path.join(dir, file.name);
       const importPath = path.relative(__dirname, realPath);
 
+      /** esm
+       * const url = pathToFileURL(realPath).pathname;
+       */
+
       const module = await import(importPath);
 
       if (!module.default) {
