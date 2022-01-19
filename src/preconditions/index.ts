@@ -73,7 +73,7 @@ export class Preconditions {
   };
 }
 
-function SetPreconditions(...preconditions: CommandPrecondition[]) {
+function CommandPreconditions(...preconditions: CommandPrecondition[]) {
   return (
     target: ConstructorType<[...unknown[]], BaseCommandInterface>
   ): void => {
@@ -106,4 +106,4 @@ function SetPreconditions(...preconditions: CommandPrecondition[]) {
   };
 }
 
-export { SetPreconditions };
+export { CommandPreconditions };
