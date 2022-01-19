@@ -10,11 +10,11 @@ type Args = {
   yum: BooleanOption;
 };
 
+@CommandPreconditions(Preconditions.GuildOnly)
 @CommandInformation({
   name: "owo",
   description: "uwu...",
 })
-@CommandPreconditions(Preconditions.GuildOnly)
 export default class OwO extends Command<Args> {
   public createArguments(): Args {
     return {

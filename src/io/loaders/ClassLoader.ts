@@ -1,13 +1,24 @@
 import type ClassLoaderResponse from "./ClassLoaderResponse";
 import fs from "fs/promises";
-import path from "path";
+import path, { join } from "path";
 import Extensions from "../extensions/Extensions";
 import { Logger } from "../../container";
 import type { ConstructorType } from "../../types";
 import type Directory from "../directories/Directory";
 import { pathToFileURL } from "url";
+import { readFileSync } from "fs";
 
+const enum runtimeType {
+  module,
+  commonJS,
+}
+
+type RootInformation = {
+  type: runtimeType;
+};
 export default class ClassLoader<T> {
+  static #ROOT_INFORMATION: RootInformation;
+
   #klass: ConstructorType<[...never], T>;
   #extension: Extensions = Extensions.JS;
   #directories: Directory[];
@@ -18,6 +29,26 @@ export default class ClassLoader<T> {
   ) {
     this.#klass = klass;
     this.#directories = directories;
+
+    if (!ClassLoader.#ROOT_INFORMATION) {
+      const cwd = process.cwd();
+
+      let info: RootInformation;
+
+      try {
+        const file = JSON.parse(
+          readFileSync(join(cwd, "package.json"), "utf8")
+        );
+        info = {
+          type:
+            file.type === "module" ? runtimeType.module : runtimeType.commonJS,
+        };
+      } catch {
+        info = { type: runtimeType.commonJS };
+      }
+
+      ClassLoader.#ROOT_INFORMATION = info;
+    }
   }
 
   public async loadAll(): Promise<ClassLoaderResponse<T>[]> {
@@ -51,12 +82,10 @@ export default class ClassLoader<T> {
     for (const file of files) {
       const realPath = path.join(dir, file.name);
 
-      // TODO DETECTION FOR TS-NODE ESM OR COMMONJS,  NOW ONLY ESM
-      const importPath = pathToFileURL(realPath).pathname;
-
-      /** cjs
-       *  importPath = path.relative(__dirname, realPath);
-       */
+      const importPath =
+        ClassLoader.#ROOT_INFORMATION.type === runtimeType.module
+          ? pathToFileURL(realPath).pathname
+          : path.relative(__dirname, realPath);
 
       const module = await import(importPath);
 
