@@ -8,8 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build && npm run start",
     "build": "tsc",
-    "start": "node --experimental-specifier-resolution=node .",
-    "prepare": "npm run build"
+    "start": "node --experimental-specifier-resolution=node ."
   },
   "engines": {
     "node": "16.x"
