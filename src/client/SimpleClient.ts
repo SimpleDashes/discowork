@@ -33,6 +33,8 @@ export default class SimpleClient
 
     this.options = options;
     this.commandProcessor = new CommandProcessor(options);
+
+    this.token = this.options.token ?? this.token;
   }
 
   public override async login(token?: string): Promise<string> {
@@ -46,7 +48,7 @@ export default class SimpleClient
       await this.commandProcessor.loadCommands();
     }
 
-    const response = await super.login(this.options.token ?? token);
+    const response = await super.login(this.token ?? token);
 
     this.on("interactionCreate", async (interaction) => {
       await this.commandProcessor.processCommand(interaction);

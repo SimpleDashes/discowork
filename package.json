@@ -2,12 +2,12 @@
   "name": "discowork",
   "version": "1.0.0",
   "description": "A simple framework made for discord.js.",
-  "main": "index.js",
+  "main": "dist/example/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build && npm run start",
     "build": "tsc --build tsconfig.json",
-    "start": "node dist/example/index.js"
+    "start": "node --experimental-specifier-resolution=node ."
   },
   "author": "SimpleDashes",
   "license": "ISC",

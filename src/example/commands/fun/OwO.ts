@@ -1,20 +1,20 @@
 import Command from "../../../commands/Command";
-import { SetupCommand } from "../../../commands/decorators";
+import { CommandInformation } from "../../../commands/decorators";
 import type { CommandContextOnlyInteractionAndClient } from "../../../commands/types/CommandContext";
 import type CommandContext from "../../../commands/types/CommandContext";
 import BooleanOption from "../../../options/classes/BooleanOption";
-import { Preconditions, SetPreconditions } from "../../../preconditions";
+import { Preconditions, CommandPreconditions } from "../../../preconditions";
 import type { ConstructorType } from "../../../types";
 
 type Args = {
   yum: BooleanOption;
 };
 
-@SetPreconditions(Preconditions.GuildOnly)
-@SetupCommand({
+@CommandInformation({
   name: "owo",
   description: "uwu...",
 })
+@CommandPreconditions(Preconditions.GuildOnly)
 export default class OwO extends Command<Args> {
   public createArguments(): Args {
     return {
