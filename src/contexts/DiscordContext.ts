@@ -8,3 +8,10 @@ export default interface DiscordContext<A> {
   args: TypedArgs<A>;
   build: () => Promise<void>;
 }
+
+type DiscordContextOnlyInteractionAndClient = Pick<
+  DiscordContext<unknown>,
+  "interaction" | "client"
+>;
+
+export type { DiscordContextOnlyInteractionAndClient };

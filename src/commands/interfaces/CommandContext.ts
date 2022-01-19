@@ -5,9 +5,9 @@ export default interface CommandContext<A> extends DiscordContext<A> {
   readonly interaction: CommandInteraction;
 }
 
-type CommandContextOnlyInteractionAndClient = Omit<
+type CommandContextOnlyInteractionAndClient = Pick<
   CommandContext<unknown>,
-  "args" | "build"
+  "interaction" | "client"
 >;
 
 export type { CommandContextOnlyInteractionAndClient };
