@@ -15,7 +15,7 @@ type Args = {
   name: "owo",
   description: "uwu...",
 })
-export default class OwO extends Command<Args> {
+export default class OwO extends Command<Args, CommandContext<Args>> {
   public createArguments(): Args {
     return {
       yum: new BooleanOption().setName("yum").setDescription("hmm..."),

@@ -47,16 +47,18 @@ export default class CommandProcessor extends TypedEventEmitter<
     ownerIDS: [],
   };
 
-  public readonly commands: Collection<string, Command<unknown>> =
-    new Collection();
+  public readonly commands: Collection<
+    string,
+    Command<unknown, CommandContext<unknown>>
+  > = new Collection();
 
   public readonly subCommands: Collection<
-    Command<unknown> | SubCommandGroup,
-    SubCommand<unknown>[]
+    Command<unknown, CommandContext<unknown>> | SubCommandGroup,
+    SubCommand<unknown, CommandContext<unknown>>[]
   > = new Collection();
 
   public readonly subCommandGroups: Collection<
-    SubCommand<unknown>,
+    SubCommand<unknown, CommandContext<unknown>>,
     SubCommandGroup[]
   > = new Collection();
 
@@ -107,7 +109,9 @@ export default class CommandProcessor extends TypedEventEmitter<
     const loadedCommands = await commandLoader.loadAll();
 
     for (const response of loadedCommands) {
-      const commandResponse = response as ClassLoaderResponse<Command<unknown>>;
+      const commandResponse = response as ClassLoaderResponse<
+        Command<unknown, CommandContext<unknown>>
+      >;
       const command = commandResponse.object;
       this.#setMetadataInformationFromCommand(command);
 
@@ -233,7 +237,7 @@ export default class CommandProcessor extends TypedEventEmitter<
   }
 
   #loopCommandArguments(
-    command: SimpleCommandInterface<unknown>,
+    command: SimpleCommandInterface<unknown, CommandContext<unknown>>,
     onOption?: ArgsLoopListener<IDiscordOption<unknown>>,
     onDefault?: ArgsLoopListener<unknown>
   ): void {
@@ -299,7 +303,10 @@ export default class CommandProcessor extends TypedEventEmitter<
     );
 
     let executorParent: CommandInterface = command;
-    let executorCommand: SimpleCommandInterface<unknown> = command;
+    let executorCommand: SimpleCommandInterface<
+      unknown,
+      CommandContext<unknown>
+    > = command;
 
     const getInnerCommand = <C extends CommandInterface>(
       command: CommandInterface,
