@@ -1,6 +1,11 @@
+/**
+ * Necessary.
+ */
+import "reflect-metadata";
+
 import dotenv from "dotenv";
-import SimpleClient from "../client/SimpleClient";
 import path from "path";
+import SimpleClient from "../client/SimpleClient";
 import { Logger } from "../container";
 
 dotenv.config();
@@ -14,7 +19,7 @@ const bot = new SimpleClient({
 
 const main = async (): Promise<void> => {
   await bot.login();
-  bot.commandProcessor.on("load", async () => {
+  bot.once("ready", async () => {
     Logger.log("Deploying...");
     await bot.Deployer.deployAll();
     Logger.log("Deployed...");
