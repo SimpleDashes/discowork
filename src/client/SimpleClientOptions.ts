@@ -7,5 +7,5 @@ export default interface SimpleClientOptions
   debug?: boolean;
   token?: string;
   developmentGuild?: Snowflake;
-  owners: Snowflake[];
+  ownerIDS: Snowflake[];
 }

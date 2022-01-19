@@ -1,7 +1,9 @@
+import type { Snowflake } from "discord-api-types";
+
 export default interface CommandProcessorOptions {
-  readonly rootDirectory: string;
-  readonly subCommandsDirectory: string;
-  readonly subCommandGroupsDirectory: string;
-  readonly wrapperDirectory: string;
-  readonly ownerIDS: string[];
+  rootDirectory: string;
+  subCommandsDirectory: string;
+  subCommandGroupsDirectory: string;
+  wrapperDirectory: string;
+  ownerIDS: Snowflake[];
 }
