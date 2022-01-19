@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "description": "A simple framework made for discord.js.",
   "main": "dist/example/index.js",
+  "types": "typings/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "npm run build && npm run start",
-    "build": "tsc --build tsconfig.json",
+    "build": "tsc",
     "start": "node --experimental-specifier-resolution=node ."
   },
+  "engines": {
+    "node": "16.x"
+  },
+  "files": [
+    "dist/**",
+    "typings/**"
+  ],
   "author": "SimpleDashes",
   "license": "ISC",
   "devDependencies": {
