@@ -1,9 +1,7 @@
-import "reflect-metadata";
-import MetadataFactory from "./MetadataFactory";
+import MethodMetadataFactory from "./metadata/MethodMetadataFactory";
 
 export class MethodDecoratorFactories {
-  public static readonly RunOnce: MetadataFactory<{ ran: true }> =
-    new MetadataFactory();
+  public static readonly RunOnce = new MethodMetadataFactory<{ ran: true }>();
 }
 
 abstract class MethodDecorator {
@@ -55,7 +53,7 @@ abstract class MethodDecorator {
 export class RunOnceWrapper extends MethodDecorator {
   public static override internalDecorate<T extends object>(
     target: T,
-    name: keyof T
+    name: keyof T & string
   ): void {
     let metadata = MethodDecoratorFactories.RunOnce.getMetadataFromTarget(
       target,
@@ -71,9 +69,9 @@ export class RunOnceWrapper extends MethodDecorator {
     };
 
     MethodDecoratorFactories.RunOnce.setMetadataFromTarget(
+      metadata,
       target,
-      name,
-      metadata
+      name
     );
   }
 }
