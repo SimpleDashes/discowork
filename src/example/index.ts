@@ -17,13 +17,9 @@ const bot = new SimpleClient({
   token: process.env["TOKEN"],
 });
 
-const main = async (): Promise<void> => {
-  await bot.login();
-  bot.once("ready", async () => {
-    Logger.log("Deploying...");
-    await bot.Deployer.deployAll();
-    Logger.log("Deployed...");
-  });
-};
-
-void main().catch();
+await bot.login();
+bot.once("ready", async () => {
+  Logger.log("Deploying...");
+  await bot.Deployer.deployAll();
+  Logger.log("Deployed...");
+});

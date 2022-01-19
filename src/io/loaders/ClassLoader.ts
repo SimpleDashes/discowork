@@ -5,6 +5,7 @@ import Extensions from "../extensions/Extensions";
 import { Logger } from "../../container";
 import type { ConstructorType } from "../../types";
 import type Directory from "../directories/Directory";
+import { pathToFileURL } from "url";
 
 export default class ClassLoader<T> {
   #klass: ConstructorType<[...never], T>;
@@ -49,10 +50,12 @@ export default class ClassLoader<T> {
 
     for (const file of files) {
       const realPath = path.join(dir, file.name);
-      const importPath = path.relative(__dirname, realPath);
 
-      /** esm
-       * const url = pathToFileURL(realPath).pathname;
+      // TODO DETECTION FOR TS-NODE ESM OR COMMONJS,  NOW ONLY ESM
+      const importPath = pathToFileURL(realPath).pathname;
+
+      /** cjs
+       *  importPath = path.relative(__dirname, realPath);
        */
 
       const module = await import(importPath);

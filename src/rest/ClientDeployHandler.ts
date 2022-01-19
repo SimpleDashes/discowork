@@ -1,7 +1,7 @@
 import type { ApplicationCommandDataResolvable, Guild } from "discord.js";
 import { assertDefinedGet } from "../assertions";
 import type SimpleClient from "../client/SimpleClient";
-import type CommandContext from "../commands/types/CommandContext";
+import type CommandContext from "../commands/interfaces/CommandContext";
 import DeployHandler from "./DeployHandler";
 
 export default class ClientDeployHandler extends DeployHandler {

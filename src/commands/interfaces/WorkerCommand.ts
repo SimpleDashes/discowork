@@ -1,10 +1,9 @@
 import type { ConstructorType } from "../../types";
-import type BaseCommandInterface from "./BaseCommandInterface";
+import type CommandInterface from "./CommandInterface";
 import type CommandContext from "./CommandContext";
 import type { CommandContextOnlyInteractionAndClient } from "./CommandContext";
 
-export default interface SimpleCommandInterface<A>
-  extends BaseCommandInterface {
+export default interface WorkerCommand<A> extends CommandInterface {
   /**
    * The arguments created by {@link createArguments}
    */

@@ -11,23 +11,24 @@ import path from "path";
 import fs from "fs/promises";
 import fsSync from "fs";
 import type { ConstructorType } from "../../types";
-import type BaseCommandInterface from "../../commands/types/BaseCommandInterface";
+import type CommandInterface from "../../commands/interfaces/CommandInterface";
 import { Logger } from "../../container";
 import DiscordOptionHelper from "../../options/DiscordOptionHelper";
 import type IDiscordOption from "../../options/interfaces/IDiscordOption";
-import type SimpleCommandInterface from "../../commands/types/SimpleCommandInterface";
+import type SimpleCommandInterface from "../../commands/interfaces/WorkerCommand";
 import type { Interaction } from "discord.js";
 import OwnerPrecondition from "../../preconditions/implementations/OwnerPrecondition";
 import { PreconditionUtils, SetupPrecondition } from "../../preconditions";
 import RequiresSubCommandsGroupsPrecondition from "../../preconditions/implementations/RequiresSubCommandsGroupsPrecondition";
 import RequiresSubCommandsPrecondition from "../../preconditions/implementations/RequiresSubCommandsPrecondition";
 import type CommandWithPreconditions from "../../preconditions/interfaces/CommandWithPreconditions";
-import type CommandContext from "../../commands/types/CommandContext";
-import type { CommandContextOnlyInteractionAndClient } from "../../commands/types/CommandContext";
+import type CommandContext from "../../commands/interfaces/CommandContext";
+import type { CommandContextOnlyInteractionAndClient } from "../../commands/interfaces/CommandContext";
 import SimpleClient from "../../client/SimpleClient";
 import assert from "assert";
 import TypedEventEmitter from "../../events/TypedEventEmitter";
 import { RunOnce, RunOnceWrapper } from "../../decorators/MethodDecorators";
+import { commandInformationMetadataFactory } from "../../commands/decorators";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
 
@@ -89,9 +90,11 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
     );
 
     const loadedCommands = await commandLoader.loadAll();
+
     for (const response of loadedCommands) {
       const commandResponse = response as ClassLoaderResponse<Command<unknown>>;
       const command = commandResponse.object;
+      this.#setMetadataInformationFromCommand(command);
 
       this.commands.set(command.name, command);
 
@@ -130,8 +133,12 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
     ];
 
     allSimpleCommands.forEach((simpleCommand) => {
+      /**
+       * We don't want to call this more than once.
+       */
       RunOnceWrapper.decorateMethod(simpleCommand, "createArguments");
       simpleCommand.args = simpleCommand.createArguments();
+
       this.#loopCommandArguments(simpleCommand, (_k, o) => {
         simpleCommand.options.push(o as never);
       });
@@ -140,13 +147,22 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
     this.emit("load");
   }
 
+  #setMetadataInformationFromCommand(command: CommandInterface): void {
+    const information = commandInformationMetadataFactory.getMetadataFromTarget(
+      command.constructor.prototype
+    );
+
+    if (information?.name) command.name = information.name;
+    if (information?.description) command.description = information.description;
+  }
+
   async #registerSubcommandOrSubcommandGroup<
-    C extends BaseCommandInterface,
-    S extends BaseCommandInterface
+    C extends CommandInterface,
+    S extends CommandInterface
   >(
     loadedCommandResponse: ClassLoaderResponse<C>,
     directoryName: string,
-    collection: Collection<BaseCommandInterface, S[]>,
+    collection: Collection<CommandInterface, S[]>,
     constructor: ConstructorType<[], S>,
     baseDirectory = directoryName
   ): Promise<ClassLoaderResponse<S>[]> {
@@ -186,6 +202,11 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
 
     const loadedObjects = response.map((o) => o.object);
     const command = collection.get(loadedCommandResponse.object);
+
+    loadedObjects.forEach((object) => {
+      this.#setMetadataInformationFromCommand(object);
+    });
+
     if (command) {
       command.push(...loadedObjects);
     } else {
@@ -261,12 +282,12 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
       checkInnerCommandRequired(RequiresSubCommandsGroupsPrecondition)
     );
 
-    let executorParent: BaseCommandInterface = command;
+    let executorParent: CommandInterface = command;
     let executorCommand: SimpleCommandInterface<unknown> = command;
 
-    const getInnerCommand = <C extends BaseCommandInterface>(
-      command: BaseCommandInterface,
-      collection: Collection<BaseCommandInterface, C[]>,
+    const getInnerCommand = <C extends CommandInterface>(
+      command: CommandInterface,
+      collection: Collection<CommandInterface, C[]>,
       name: string
     ): C | undefined => {
       return collection.get(command)?.find((o) => o.name === name);
@@ -313,7 +334,7 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
     }
 
     const shouldExecuteCommand = async (
-      command: BaseCommandInterface
+      command: CommandInterface
     ): Promise<boolean> => {
       return PreconditionUtils.commandContainsPreconditions(command)
         ? await this.#verifyPreconditions(command, executorContext)
@@ -323,7 +344,7 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
     if (!(await shouldExecuteCommand(command))) return;
 
     const shouldExecuteInnerCommand = async (
-      inner: BaseCommandInterface
+      inner: CommandInterface
     ): Promise<boolean> => {
       return inner === command ? true : await shouldExecuteCommand(inner);
     };

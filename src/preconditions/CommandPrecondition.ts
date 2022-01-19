@@ -1,4 +1,4 @@
-import type CommandContext from "../commands/types/CommandContext";
+import type CommandContext from "../commands/interfaces/CommandContext";
 import InteractionUtils from "../utils/InteractionUtils";
 
 export default abstract class CommandPrecondition {

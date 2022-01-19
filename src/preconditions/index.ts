@@ -7,7 +7,7 @@ import RequiresGuildPrecondition from "./implementations/RequiresGuildPreconditi
 import RequiresSubCommandsPrecondition from "./implementations/RequiresSubCommandsPrecondition";
 import RequiresSubCommandsGroupsPrecondition from "./implementations/RequiresSubCommandsGroupsPrecondition";
 import type { ConstructorType } from "../types";
-import type BaseCommandInterface from "../commands/types/BaseCommandInterface";
+import type CommandInterface from "../commands/interfaces/CommandInterface";
 
 export class PreconditionUtils {
   public static commandContainsPreconditions(
@@ -74,9 +74,7 @@ export class Preconditions {
 }
 
 function CommandPreconditions(...preconditions: CommandPrecondition[]) {
-  return (
-    target: ConstructorType<[...unknown[]], BaseCommandInterface>
-  ): void => {
+  return (target: ConstructorType<[...unknown[]], CommandInterface>): void => {
     const prototype = target.prototype as unknown as CommandWithPreconditions;
     prototype.preconditions ??= [];
 

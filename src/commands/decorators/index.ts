@@ -1,13 +1,23 @@
+import ClassMetadataFactory from "../../decorators/metadata/ClassMetadataFactory";
+import type IHasNameAndDescription from "../../interfaces/IHasNameAndDescription";
 import type { ConstructorType } from "../../types";
-import type BaseCommandInterface from "../types/BaseCommandInterface";
+import type CommandInterface from "../interfaces/CommandInterface";
+
+export const commandInformationMetadataFactory =
+  new ClassMetadataFactory<IHasNameAndDescription>();
 
 export function CommandInformation(options: {
   name: string;
   description: string;
 }) {
-  return (target: ConstructorType<[], BaseCommandInterface>): void => {
+  return (target: ConstructorType<[], CommandInterface>): void => {
     const { name, description } = options;
-    target.prototype.name = name;
-    target.prototype.description = description;
+    commandInformationMetadataFactory.setMetadataFromTarget(
+      {
+        name,
+        description,
+      },
+      target.prototype
+    );
   };
 }

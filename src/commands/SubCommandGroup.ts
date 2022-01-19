@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandGroupBuilder } from "@discordjs/builders";
-import type BaseCommandInterface from "./types/BaseCommandInterface";
+import type CommandInterface from "./interfaces/CommandInterface";
 
 export default abstract class SubCommandGroup
   extends SlashCommandSubcommandGroupBuilder
-  implements BaseCommandInterface {}
+  implements CommandInterface {}
