@@ -32,7 +32,12 @@ import { commandInformationMetadataFactory } from "../../commands/decorators";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
 
-export default class CommandProcessor extends TypedEventEmitter<"load"> {
+export default class CommandProcessor extends TypedEventEmitter<
+  | "load"
+  | "command_import"
+  | "command_module_no_default_export"
+  | "wrong_command_type"
+> {
   public static DEFAULT_COMMAND_PROCESSOR_OPTIONS: CommandProcessorOptions &
     Record<string, unknown> = {
     rootDirectory: path.join("dist", "commands"),
@@ -80,6 +85,14 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
     SetupPrecondition.setup(new OwnerPrecondition(this.#options.ownerIDS));
   }
 
+  #listenToCommandClassLoader(classLoader: ClassLoader<unknown>): void {
+    classLoader.on("import", () => this.emit("command_import"));
+    classLoader.on("no_default_export", () =>
+      this.emit("command_module_no_default_export")
+    );
+    classLoader.on("wrong_type", () => this.emit("wrong_command_type"));
+  }
+
   @RunOnce()
   public async loadCommands(): Promise<void> {
     const commandDirectories = await this.#directoryFactory.build();
@@ -88,6 +101,8 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
       Command as never,
       ...commandDirectories
     );
+
+    this.#listenToCommandClassLoader(commandLoader);
 
     const loadedCommands = await commandLoader.loadAll();
 
@@ -198,6 +213,7 @@ export default class CommandProcessor extends TypedEventEmitter<"load"> {
 
     const directory = new Directory(directoryName);
     const loader = new ClassLoader(constructor, directory);
+    this.#listenToCommandClassLoader(loader);
     const response = await loader.loadAll();
 
     const loadedObjects = response.map((o) => o.object);

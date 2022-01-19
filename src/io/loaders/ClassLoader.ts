@@ -7,6 +7,7 @@ import type { ConstructorType } from "../../types";
 import type Directory from "../directories/Directory";
 import { pathToFileURL } from "url";
 import { readFileSync } from "fs";
+import TypedEventEmitter from "../../events/TypedEventEmitter";
 
 const enum runtimeType {
   module,
@@ -16,7 +17,9 @@ const enum runtimeType {
 type RootInformation = {
   type: runtimeType;
 };
-export default class ClassLoader<T> {
+export default class ClassLoader<T> extends TypedEventEmitter<
+  "import" | "no_default_export" | "wrong_type"
+> {
   static #ROOT_INFORMATION: RootInformation;
 
   #klass: ConstructorType<[...never], T>;
@@ -27,6 +30,8 @@ export default class ClassLoader<T> {
     klass: ConstructorType<[...never], T>,
     ...directories: Directory[]
   ) {
+    super();
+
     this.#klass = klass;
     this.#directories = directories;
 
@@ -95,6 +100,7 @@ export default class ClassLoader<T> {
             this.#klass.name
           } at ${realPath}`
         );
+        this.emit("no_default_export");
         continue;
       }
 
@@ -107,10 +113,12 @@ export default class ClassLoader<T> {
           object,
         });
         Logger.log(`Imported a ${klass.name} at ${realPath}.`);
+        this.emit("import");
       } else {
         Logger.error(
           `Failed to import a ${klass.name} at ${realPath} (wrong type)`
         );
+        this.emit("wrong_type");
       }
     }
 
