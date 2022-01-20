@@ -1,10 +1,11 @@
-import Command from "../../../commands/Command";
-import { CommandInformation } from "../../../commands/decorators";
-import type { CommandContextOnlyInteractionAndClient } from "../../../commands/interfaces/CommandContext";
-import type CommandContext from "../../../commands/interfaces/CommandContext";
+import { CommandContextOnlyInteractionAndClient } from "../../../commands";
+import Command from "../../../commands/classes/Command";
+import CommandInformation from "../../../commands/decorators/CommandInformation";
+import CommandContext from "../../../commands/interfaces/CommandContext";
 import BooleanOption from "../../../options/classes/BooleanOption";
-import { Preconditions, CommandPreconditions } from "../../../preconditions";
-import type { ConstructorType } from "../../../types";
+import { CommandPreconditions, Preconditions } from "../../../preconditions";
+import ConstructorType from "../../../types/ConstructorType";
+
 
 type Args = {
   yum: BooleanOption;

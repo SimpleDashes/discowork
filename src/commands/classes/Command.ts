@@ -1,8 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import type ConstructorType from "../types/ConstructorType";
-import type CommandContext from "./interfaces/CommandContext";
-import type { CommandContextOnlyInteractionAndClient } from "./interfaces/CommandContext";
-import type WorkerCommand from "./interfaces/WorkerCommand";
+import ConstructorType from "../../types/ConstructorType";
+import CommandContext, { CommandContextOnlyInteractionAndClient } from "../interfaces/CommandContext";
+import WorkerCommand from "../interfaces/WorkerCommand";
 
 export default abstract class Command<A, CTX extends CommandContext<A>>
   extends SlashCommandBuilder

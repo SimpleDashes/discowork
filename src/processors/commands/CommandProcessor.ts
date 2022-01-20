@@ -1,34 +1,33 @@
-import Collection from "@discordjs/collection";
-import Command from "../../commands/Command";
-import SubCommand from "../../commands/SubCommand";
-import SubCommandGroup from "../../commands/SubCommandGroup";
+
+import { Collection, Interaction } from "discord.js";
+import path from "path";
+import SimpleClient from "../../client/SimpleClient";
+import { commandInformationMetadataFactory, CommandContextOnlyInteractionAndClient } from "../../commands";
+import Command from "../../commands/classes/Command";
+import SubCommand from "../../commands/classes/SubCommand";
+import SubCommandGroup from "../../commands/classes/SubCommandGroup";
+import CommandContext from "../../commands/interfaces/CommandContext";
+import CommandInterface from "../../commands/interfaces/CommandInterface";
+import { Logger } from "../../container";
+import { RunOnce, RunOnceWrapper } from "../../decorators";
+import TypedEventEmitter from "../../events/TypedEventEmitter";
 import Directory from "../../io/directories/Directory";
 import DirectoryFactory from "../../io/directories/DirectoryFactory";
 import ClassLoader from "../../io/loaders/ClassLoader";
-import type ClassLoaderResponse from "../../io/loaders/ClassLoaderResponse";
-import type CommandProcessorOptions from "./CommandProcessorOptions";
-import path from "path";
-import fs from "fs/promises";
-import fsSync from "fs";
-import type { ConstructorType } from "../../types";
-import type CommandInterface from "../../commands/interfaces/CommandInterface";
-import { Logger } from "../../container";
-import DiscordOptionHelper from "../../options/DiscordOptionHelper";
-import type IDiscordOption from "../../options/interfaces/IDiscordOption";
-import type SimpleCommandInterface from "../../commands/interfaces/WorkerCommand";
-import type { Interaction } from "discord.js";
+import ClassLoaderResponse from "../../io/loaders/ClassLoaderResponse";
+import IDiscordOption from "../../options/interfaces/IDiscordOption";
+import DiscordOptionHelper from "../../options/utils/DiscordOptionHelper";
+import { SetupPrecondition, PreconditionUtils } from "../../preconditions";
 import OwnerPrecondition from "../../preconditions/implementations/OwnerPrecondition";
-import { PreconditionUtils, SetupPrecondition } from "../../preconditions";
 import RequiresSubCommandsGroupsPrecondition from "../../preconditions/implementations/RequiresSubCommandsGroupsPrecondition";
 import RequiresSubCommandsPrecondition from "../../preconditions/implementations/RequiresSubCommandsPrecondition";
-import type CommandWithPreconditions from "../../preconditions/interfaces/CommandWithPreconditions";
-import type CommandContext from "../../commands/interfaces/CommandContext";
-import type { CommandContextOnlyInteractionAndClient } from "../../commands/interfaces/CommandContext";
-import SimpleClient from "../../client/SimpleClient";
+import CommandWithPreconditions from "../../preconditions/interfaces/CommandWithPreconditions";
+import ConstructorType from "../../types/ConstructorType";
+import CommandProcessorOptions from "./CommandProcessorOptions";
+import fs from "fs/promises"
+import fsSync from "fs"
 import assert from "assert";
-import TypedEventEmitter from "../../events/TypedEventEmitter";
-import { RunOnce, RunOnceWrapper } from "../../decorators/MethodDecorators";
-import { commandInformationMetadataFactory } from "../../commands/decorators";
+import WorkerCommand from "../../commands/interfaces/WorkerCommand";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
 
@@ -216,7 +215,7 @@ export default class CommandProcessor extends TypedEventEmitter<
     }
 
     const directory = new Directory(directoryName);
-    const loader = new ClassLoader(constructor, directory);
+    const loader = new ClassLoader<S>(constructor, directory);
     this.#listenToCommandClassLoader(loader);
     const response = await loader.loadAll();
 
@@ -237,7 +236,7 @@ export default class CommandProcessor extends TypedEventEmitter<
   }
 
   #loopCommandArguments(
-    command: SimpleCommandInterface<unknown, CommandContext<unknown>>,
+    command: WorkerCommand<unknown, CommandContext<unknown>>,
     onOption?: ArgsLoopListener<IDiscordOption<unknown>>,
     onDefault?: ArgsLoopListener<unknown>
   ): void {
@@ -303,7 +302,7 @@ export default class CommandProcessor extends TypedEventEmitter<
     );
 
     let executorParent: CommandInterface = command;
-    let executorCommand: SimpleCommandInterface<
+    let executorCommand: WorkerCommand<
       unknown,
       CommandContext<unknown>
     > = command;

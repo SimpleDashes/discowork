@@ -1,5 +1,5 @@
-import type IDiscordOption from "./interfaces/IDiscordOption";
-import type { ILazyApply } from "./interfaces/ILazyApply";
+import type IDiscordOption from "../interfaces/IDiscordOption";
+import type {ILazyApply} from "../interfaces/ILazyApply";
 
 export default class DiscordOptionHelper {
   public static isObjectOption(

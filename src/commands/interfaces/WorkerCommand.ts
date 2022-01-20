@@ -1,7 +1,8 @@
-import type { ConstructorType } from "../../types";
+
 import type CommandInterface from "./CommandInterface";
 import type CommandContext from "./CommandContext";
 import type { CommandContextOnlyInteractionAndClient } from "./CommandContext";
+import ConstructorType from "../../types/ConstructorType";
 
 export default interface WorkerCommand<A, CTX extends CommandContext<A>>
   extends CommandInterface {

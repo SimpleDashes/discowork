@@ -3,11 +3,11 @@ import fs from "fs/promises";
 import path, { join } from "path";
 import Extensions from "../extensions/Extensions";
 import { Logger } from "../../container";
-import type { ConstructorType } from "../../types";
 import type Directory from "../directories/Directory";
 import { pathToFileURL } from "url";
 import { readFileSync } from "fs";
 import TypedEventEmitter from "../../events/TypedEventEmitter";
+import ConstructorType from "../../types/ConstructorType";
 
 const enum runtimeType {
   module,
