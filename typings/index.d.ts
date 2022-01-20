@@ -1,10 +1,10 @@
-declare module 'discowork/assertions/Defined' {
+declare module 'assertions/Defined' {
 	export function assertDefined<T>(object: T): asserts object is NonNullable<T>;
 	export function assertDefinedGet<T>(object: T | undefined | null): NonNullable<T>;
 
 }
-declare module 'discowork/decorators/metadata/BaseMetadataFactory' {
-	import { Collection } from 'discowork/discord.js';
+declare module 'decorators/metadata/BaseMetadataFactory' {
+	import { Collection } from 'discord.js';
 	export type ObjectKeyString<T> = keyof T & string;
 	export default abstract class MetadataFactory<M> {
 	    protected readonly id: string;
@@ -15,9 +15,9 @@ declare module 'discowork/decorators/metadata/BaseMetadataFactory' {
 	}
 
 }
-declare module 'discowork/decorators/metadata/MethodMetadataFactory' {
-	import type { ObjectKeyString } from 'discowork/decorators/metadata/BaseMetadataFactory';
-	import BaseMetadataFactory from 'discowork/decorators/metadata/BaseMetadataFactory';
+declare module 'decorators/metadata/MethodMetadataFactory' {
+	import type { ObjectKeyString } from 'decorators/metadata/BaseMetadataFactory';
+	import BaseMetadataFactory from 'decorators/metadata/BaseMetadataFactory';
 	export default class MethodMetadataFactory<M> extends BaseMetadataFactory<M> {
 	    getMetadataName<T extends object>(target: T, name: ObjectKeyString<T>): string;
 	    getMetadataFromTarget<T extends object>(target: T, name: ObjectKeyString<T>): M | undefined;
@@ -25,8 +25,8 @@ declare module 'discowork/decorators/metadata/MethodMetadataFactory' {
 	}
 
 }
-declare module 'discowork/decorators/MethodDecorators' {
-	import MethodMetadataFactory from 'discowork/decorators/metadata/MethodMetadataFactory';
+declare module 'decorators/MethodDecorators' {
+	import MethodMetadataFactory from 'decorators/metadata/MethodMetadataFactory';
 	export class MethodDecoratorFactories {
 	    static readonly RunOnce: MethodMetadataFactory<{
 	        ran: true;
@@ -43,7 +43,7 @@ declare module 'discowork/decorators/MethodDecorators' {
 	export {};
 
 }
-declare module 'discowork/events/TypedEventEmitter' {
+declare module 'events/TypedEventEmitter' {
 	/// <reference types="node" />
 	import EventEmitter from 'node:events';
 	export default class TypedEventEmitter<T extends string, A = []> extends EventEmitter {
@@ -52,7 +52,7 @@ declare module 'discowork/events/TypedEventEmitter' {
 	}
 
 }
-declare module 'discowork/types/ConstructorType' {
+declare module 'types/ConstructorType' {
 	 type ConstructorType<A extends unknown[], T> = {
 	    new (...args: A): T;
 	    prototype: T;
@@ -60,16 +60,16 @@ declare module 'discowork/types/ConstructorType' {
 	export default ConstructorType;
 
 }
-declare module 'discowork/interfaces/IHasNameAndDescription' {
+declare module 'interfaces/IHasNameAndDescription' {
 	export default interface IHasNameAndDescription {
 	    name: string;
 	    description: string;
 	}
 
 }
-declare module 'discowork/options/interfaces/IDiscordOption' {
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import type IHasNameAndDescription from 'discowork/interfaces/IHasNameAndDescription';
+declare module 'options/interfaces/IDiscordOption' {
+	import type { CommandInteraction } from 'discord.js';
+	import type IHasNameAndDescription from 'interfaces/IHasNameAndDescription';
 	export default interface IDiscordOption<R> extends IHasNameAndDescription {
 	    required: boolean;
 	    type: number;
@@ -79,77 +79,77 @@ declare module 'discowork/options/interfaces/IDiscordOption' {
 	}
 
 }
-declare module 'discowork/options/classes/BooleanOption' {
-	import { SlashCommandBooleanOption } from 'discowork/@discordjs/builders';
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/BooleanOption' {
+	import { SlashCommandBooleanOption } from '@discordjs/builders';
+	import type { CommandInteraction } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class BooleanOption extends SlashCommandBooleanOption implements IDiscordOption<boolean> {
 	    apply(interaction: CommandInteraction, returnDefault?: boolean): boolean;
 	}
 
 }
-declare module 'discowork/options/classes/ChannelOption' {
-	import { SlashCommandChannelOption } from 'discowork/@discordjs/builders';
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import { GuildChannel, ThreadChannel } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/ChannelOption' {
+	import { SlashCommandChannelOption } from '@discordjs/builders';
+	import type { CommandInteraction } from 'discord.js';
+	import { GuildChannel, ThreadChannel } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class ChannelOption extends SlashCommandChannelOption implements IDiscordOption<GuildChannel | ThreadChannel> {
 	    apply(interaction: CommandInteraction): GuildChannel | ThreadChannel | null;
 	}
 
 }
-declare module 'discowork/options/classes/IntegerOption' {
-	import { SlashCommandIntegerOption } from 'discowork/@discordjs/builders';
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/IntegerOption' {
+	import { SlashCommandIntegerOption } from '@discordjs/builders';
+	import type { CommandInteraction } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class IntegerOption extends SlashCommandIntegerOption implements IDiscordOption<number> {
 	    apply(interaction: CommandInteraction): number | null;
 	}
 
 }
-declare module 'discowork/options/classes/MentionableOption' {
-	import { SlashCommandMentionableOption } from 'discowork/@discordjs/builders';
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import { GuildMember, Role, User } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/MentionableOption' {
+	import { SlashCommandMentionableOption } from '@discordjs/builders';
+	import type { CommandInteraction } from 'discord.js';
+	import { GuildMember, Role, User } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class MentionableOptions extends SlashCommandMentionableOption implements IDiscordOption<GuildMember | Role | User> {
 	    apply(interaction: CommandInteraction): Role | User | GuildMember | null;
 	}
 
 }
-declare module 'discowork/options/classes/NumberOption' {
-	import { SlashCommandNumberOption } from 'discowork/@discordjs/builders';
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/NumberOption' {
+	import { SlashCommandNumberOption } from '@discordjs/builders';
+	import type { CommandInteraction } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class NumberOption extends SlashCommandNumberOption implements IDiscordOption<number> {
 	    apply(interaction: CommandInteraction): number | null;
 	}
 
 }
-declare module 'discowork/options/classes/RoleOption' {
-	import { SlashCommandRoleOption } from 'discowork/@discordjs/builders';
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import { Role } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/RoleOption' {
+	import { SlashCommandRoleOption } from '@discordjs/builders';
+	import type { CommandInteraction } from 'discord.js';
+	import { Role } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class RoleOption extends SlashCommandRoleOption implements IDiscordOption<Role> {
 	    apply(interaction: CommandInteraction): Role | null;
 	}
 
 }
-declare module 'discowork/options/classes/StringOption' {
-	import { SlashCommandStringOption } from 'discowork/@discordjs/builders';
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/StringOption' {
+	import { SlashCommandStringOption } from '@discordjs/builders';
+	import type { CommandInteraction } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class StringOption extends SlashCommandStringOption implements IDiscordOption<string> {
 	    apply(interaction: CommandInteraction): string | null;
 	}
 
 }
-declare module 'discowork/options/classes/UserOption' {
-	import { SlashCommandUserOption } from 'discowork/@discordjs/builders';
-	import { GuildMember } from 'discowork/discord.js';
-	import type { CommandInteraction, User } from 'discowork/discord.js';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
+declare module 'options/classes/UserOption' {
+	import { SlashCommandUserOption } from '@discordjs/builders';
+	import { GuildMember } from 'discord.js';
+	import type { CommandInteraction, User } from 'discord.js';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
 	export default class UserOption extends SlashCommandUserOption implements IDiscordOption<User> {
 	    readonly defaultToSelf: boolean;
 	    constructor(defaultToSelf?: boolean);
@@ -158,35 +158,35 @@ declare module 'discowork/options/classes/UserOption' {
 	}
 
 }
-declare module 'discowork/options/interfaces/ILazyApply' {
+declare module 'options/interfaces/ILazyApply' {
 	interface ILazyApply {
 	    readonly lazyApply: true;
 	}
 	export type { ILazyApply };
 
 }
-declare module 'discowork/contexts/TypedArgs' {
-	import type { Channel, GuildMember, Role, User } from 'discowork/discord.js';
-	import type BooleanOption from 'discowork/options/classes/BooleanOption';
-	import type ChannelOption from 'discowork/options/classes/ChannelOption';
-	import type IntegerOption from 'discowork/options/classes/IntegerOption';
-	import type MentionableOptions from 'discowork/options/classes/MentionableOption';
-	import type NumberOption from 'discowork/options/classes/NumberOption';
-	import type RoleOption from 'discowork/options/classes/RoleOption';
-	import type StringOption from 'discowork/options/classes/StringOption';
-	import type UserOption from 'discowork/options/classes/UserOption';
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
-	import type { ILazyApply } from 'discowork/options/interfaces/ILazyApply';
+declare module 'contexts/TypedArgs' {
+	import type { Channel, GuildMember, Role, User } from 'discord.js';
+	import type BooleanOption from 'options/classes/BooleanOption';
+	import type ChannelOption from 'options/classes/ChannelOption';
+	import type IntegerOption from 'options/classes/IntegerOption';
+	import type MentionableOptions from 'options/classes/MentionableOption';
+	import type NumberOption from 'options/classes/NumberOption';
+	import type RoleOption from 'options/classes/RoleOption';
+	import type StringOption from 'options/classes/StringOption';
+	import type UserOption from 'options/classes/UserOption';
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
+	import type { ILazyApply } from 'options/interfaces/ILazyApply';
 	export type MapCommandOption<R, T extends IDiscordOption<R>> = T["required"] extends true ? R : R | undefined;
 	export type TypedArgs<A> = {
 	    [K in keyof A]: A[K] extends ILazyApply ? A[K] : A[K] extends BooleanOption ? MapCommandOption<boolean, A[K]> : A[K] extends ChannelOption ? MapCommandOption<Channel, A[K]> : A[K] extends IntegerOption | NumberOption ? MapCommandOption<number, A[K]> : A[K] extends MentionableOptions ? MapCommandOption<GuildMember | Role | User, A[K]> : A[K] extends RoleOption ? MapCommandOption<Role, A[K]> : A[K] extends StringOption ? MapCommandOption<string, A[K]> : A[K] extends UserOption ? MapCommandOption<User, A[K]> : A[K];
 	};
 
 }
-declare module 'discowork/contexts/DiscordContext' {
-	import type { Interaction } from 'discowork/discord.js';
-	import type SimpleClient from 'discowork/client/SimpleClient';
-	import type { TypedArgs } from 'discowork/contexts/TypedArgs';
+declare module 'contexts/DiscordContext' {
+	import type { Interaction } from 'discord.js';
+	import type SimpleClient from 'client/SimpleClient';
+	import type { TypedArgs } from 'contexts/TypedArgs';
 	export default interface DiscordContext<A> {
 	    client: SimpleClient;
 	    interaction: Interaction;
@@ -196,18 +196,18 @@ declare module 'discowork/contexts/DiscordContext' {
 	export type { DiscordContextOnlyInteractionAndClient };
 
 }
-declare module 'discowork/commands/interfaces/CommandContext' {
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import type DiscordContext from 'discowork/contexts/DiscordContext';
+declare module 'commands/interfaces/CommandContext' {
+	import type { CommandInteraction } from 'discord.js';
+	import type DiscordContext from 'contexts/DiscordContext';
 	export default interface CommandContext<A> extends DiscordContext<A> {
 	    readonly interaction: CommandInteraction;
 	} type CommandContextOnlyInteractionAndClient = Pick<CommandContext<unknown>, "interaction" | "client">;
 	export type { CommandContextOnlyInteractionAndClient };
 
 }
-declare module 'discowork/commands/interfaces/CommandInterface' {
-	import type { ToAPIApplicationCommandOptions } from 'discowork/@discordjs/builders';
-	import type { APIApplicationCommandSubcommandGroupOption, APIApplicationCommandSubcommandOption, RESTPostAPIApplicationCommandsJSONBody } from 'discowork/discord-api-types';
+declare module 'commands/interfaces/CommandInterface' {
+	import type { ToAPIApplicationCommandOptions } from '@discordjs/builders';
+	import type { APIApplicationCommandSubcommandGroupOption, APIApplicationCommandSubcommandOption, RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 	export default interface CommandInterface {
 	    name: string;
 	    description: string;
@@ -216,11 +216,11 @@ declare module 'discowork/commands/interfaces/CommandInterface' {
 	}
 
 }
-declare module 'discowork/commands/interfaces/WorkerCommand' {
-	import type CommandInterface from 'discowork/commands/interfaces/CommandInterface';
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import type { CommandContextOnlyInteractionAndClient } from 'discowork/commands/interfaces/CommandContext';
-	import ConstructorType from 'discowork/types/ConstructorType';
+declare module 'commands/interfaces/WorkerCommand' {
+	import type CommandInterface from 'commands/interfaces/CommandInterface';
+	import type CommandContext from 'commands/interfaces/CommandContext';
+	import type { CommandContextOnlyInteractionAndClient } from 'commands/interfaces/CommandContext';
+	import ConstructorType from 'types/ConstructorType';
 	export default interface WorkerCommand<A, CTX extends CommandContext<A>> extends CommandInterface {
 	    args: A;
 	    trigger: (context: CTX) => Promise<void>;
@@ -229,11 +229,11 @@ declare module 'discowork/commands/interfaces/WorkerCommand' {
 	}
 
 }
-declare module 'discowork/commands/classes/Command' {
-	import { SlashCommandBuilder } from 'discowork/@discordjs/builders';
-	import ConstructorType from 'discowork/types/ConstructorType';
-	import CommandContext, { CommandContextOnlyInteractionAndClient } from 'discowork/commands/interfaces/CommandContext';
-	import WorkerCommand from 'discowork/commands/interfaces/WorkerCommand';
+declare module 'commands/classes/Command' {
+	import { SlashCommandBuilder } from '@discordjs/builders';
+	import ConstructorType from 'types/ConstructorType';
+	import CommandContext, { CommandContextOnlyInteractionAndClient } from 'commands/interfaces/CommandContext';
+	import WorkerCommand from 'commands/interfaces/WorkerCommand';
 	export default abstract class Command<A, CTX extends CommandContext<A>> extends SlashCommandBuilder implements WorkerCommand<A, CTX> {
 	    args: A;
 	    abstract trigger(context: CTX): Promise<void>;
@@ -242,12 +242,12 @@ declare module 'discowork/commands/classes/Command' {
 	}
 
 }
-declare module 'discowork/commands/classes/SubCommand' {
-	import { SlashCommandSubcommandBuilder } from 'discowork/@discordjs/builders';
-	import ConstructorType from 'discowork/types/ConstructorType';
-	import { CommandContextOnlyInteractionAndClient } from 'discowork/commands/interfaces/CommandContext';
-	import CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import WorkerCommand from 'discowork/commands/interfaces/WorkerCommand';
+declare module 'commands/classes/SubCommand' {
+	import { SlashCommandSubcommandBuilder } from '@discordjs/builders';
+	import ConstructorType from 'types/ConstructorType';
+	import { CommandContextOnlyInteractionAndClient } from 'commands/interfaces/CommandContext';
+	import CommandContext from 'commands/interfaces/CommandContext';
+	import WorkerCommand from 'commands/interfaces/WorkerCommand';
 	export default abstract class SubCommand<A, CTX extends CommandContext<A>> extends SlashCommandSubcommandBuilder implements WorkerCommand<A, CTX> {
 	    args: A;
 	    abstract trigger(context: CTX): Promise<void>;
@@ -258,15 +258,15 @@ declare module 'discowork/commands/classes/SubCommand' {
 	}
 
 }
-declare module 'discowork/commands/classes/SubCommandGroup' {
-	import { SlashCommandSubcommandGroupBuilder } from 'discowork/@discordjs/builders';
-	import CommandInterface from 'discowork/commands/interfaces/CommandInterface';
+declare module 'commands/classes/SubCommandGroup' {
+	import { SlashCommandSubcommandGroupBuilder } from '@discordjs/builders';
+	import CommandInterface from 'commands/interfaces/CommandInterface';
 	export default abstract class SubCommandGroup extends SlashCommandSubcommandGroupBuilder implements CommandInterface {
 	}
 
 }
-declare module 'discowork/decorators/metadata/ClassMetadataFactory' {
-	import BaseMetadataFactory from 'discowork/decorators/metadata/BaseMetadataFactory';
+declare module 'decorators/metadata/ClassMetadataFactory' {
+	import BaseMetadataFactory from 'decorators/metadata/BaseMetadataFactory';
 	export default class ClassMetadataFactory<M> extends BaseMetadataFactory<M> {
 	    #private;
 	    getMetadataName<T extends object>(target: T): string;
@@ -275,11 +275,11 @@ declare module 'discowork/decorators/metadata/ClassMetadataFactory' {
 	}
 
 }
-declare module 'discowork/commands/decorators/CommandInformation' {
-	import ClassMetadataFactory from 'discowork/decorators/metadata/ClassMetadataFactory';
-	import type IHasNameAndDescription from 'discowork/interfaces/IHasNameAndDescription';
-	import ConstructorType from 'discowork/types/ConstructorType';
-	import type CommandInterface from 'discowork/commands/interfaces/CommandInterface';
+declare module 'commands/decorators/CommandInformation' {
+	import ClassMetadataFactory from 'decorators/metadata/ClassMetadataFactory';
+	import type IHasNameAndDescription from 'interfaces/IHasNameAndDescription';
+	import ConstructorType from 'types/ConstructorType';
+	import type CommandInterface from 'commands/interfaces/CommandInterface';
 	export const commandInformationMetadataFactory: ClassMetadataFactory<IHasNameAndDescription>;
 	export default function CommandInformation(options: {
 	    name: string;
@@ -288,11 +288,11 @@ declare module 'discowork/commands/decorators/CommandInformation' {
 	], CommandInterface>) => void;
 
 }
-declare module 'discowork/container/main' {
+declare module 'container/main' {
 	export const Logger: import("consola").Consola;
 
 }
-declare module 'discowork/io/directories/Directory' {
+declare module 'io/directories/Directory' {
 	export default class Directory {
 	    #private;
 	    protected path: string;
@@ -303,8 +303,8 @@ declare module 'discowork/io/directories/Directory' {
 	}
 
 }
-declare module 'discowork/io/directories/DirectoryFactory' {
-	import Directory from 'discowork/io/directories/Directory';
+declare module 'io/directories/DirectoryFactory' {
+	import Directory from 'io/directories/Directory';
 	export default class DirectoryFactory {
 	    #private;
 	    readonly root: string;
@@ -315,15 +315,15 @@ declare module 'discowork/io/directories/DirectoryFactory' {
 	}
 
 }
-declare module 'discowork/io/loaders/ClassLoaderResponse' {
-	import type Directory from 'discowork/io/directories/Directory'; type ClassLoaderResponse<T> = {
+declare module 'io/loaders/ClassLoaderResponse' {
+	import type Directory from 'io/directories/Directory'; type ClassLoaderResponse<T> = {
 	    directory: Directory;
 	    object: T;
 	};
 	export default ClassLoaderResponse;
 
 }
-declare module 'discowork/io/extensions/Extensions' {
+declare module 'io/extensions/Extensions' {
 	 enum Extensions {
 	    JS = "js",
 	    TS = "ts"
@@ -331,11 +331,11 @@ declare module 'discowork/io/extensions/Extensions' {
 	export default Extensions;
 
 }
-declare module 'discowork/io/loaders/ClassLoader' {
-	import type ClassLoaderResponse from 'discowork/io/loaders/ClassLoaderResponse';
-	import type Directory from 'discowork/io/directories/Directory';
-	import TypedEventEmitter from 'discowork/events/TypedEventEmitter';
-	import ConstructorType from 'discowork/types/ConstructorType';
+declare module 'io/loaders/ClassLoader' {
+	import type ClassLoaderResponse from 'io/loaders/ClassLoaderResponse';
+	import type Directory from 'io/directories/Directory';
+	import TypedEventEmitter from 'events/TypedEventEmitter';
+	import ConstructorType from 'types/ConstructorType';
 	export default class ClassLoader<T> extends TypedEventEmitter<"import" | "no_default_export" | "wrong_type"> {
 	    #private;
 	    constructor(klass: ConstructorType<[...never], T>, ...directories: Directory[]);
@@ -343,18 +343,18 @@ declare module 'discowork/io/loaders/ClassLoader' {
 	}
 
 }
-declare module 'discowork/options/utils/DiscordOptionHelper' {
-	import type IDiscordOption from 'discowork/options/interfaces/IDiscordOption';
-	import type { ILazyApply } from 'discowork/options/interfaces/ILazyApply';
+declare module 'options/utils/DiscordOptionHelper' {
+	import type IDiscordOption from 'options/interfaces/IDiscordOption';
+	import type { ILazyApply } from 'options/interfaces/ILazyApply';
 	export default class DiscordOptionHelper {
 	    static isObjectOption(object: unknown): object is IDiscordOption<unknown>;
 	    static isLazyApplyOption(object: unknown): object is ILazyApply;
 	}
 
 }
-declare module 'discowork/utils/InteractionUtils' {
-	import type { APIMessage } from 'discowork/discord-api-types';
-	import type { ButtonInteraction, CacheType, CommandInteraction, InteractionReplyOptions, InteractionUpdateOptions, Message, MessageComponentInteraction, MessagePayload, WebhookEditMessageOptions } from 'discowork/discord.js';
+declare module 'utils/InteractionUtils' {
+	import type { APIMessage } from 'discord-api-types';
+	import type { ButtonInteraction, CacheType, CommandInteraction, InteractionReplyOptions, InteractionUpdateOptions, Message, MessageComponentInteraction, MessagePayload, WebhookEditMessageOptions } from 'discord.js';
 	export default class InteractionUtils {
 	    static reply(interaction: CommandInteraction<CacheType> | MessageComponentInteraction<CacheType>, options?: string | MessagePayload | WebhookEditMessageOptions | (InteractionReplyOptions & {
 	        fetchReply: true;
@@ -363,8 +363,8 @@ declare module 'discowork/utils/InteractionUtils' {
 	}
 
 }
-declare module 'discowork/preconditions/CommandPrecondition' {
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
+declare module 'preconditions/CommandPrecondition' {
+	import type CommandContext from 'commands/interfaces/CommandContext';
 	export default abstract class CommandPrecondition {
 	    onFailMessage?: (context: CommandContext<unknown>) => string;
 	    validate(context: CommandContext<unknown>): Promise<boolean>;
@@ -372,10 +372,10 @@ declare module 'discowork/preconditions/CommandPrecondition' {
 	}
 
 }
-declare module 'discowork/preconditions/implementations/GuildPermissionsPreconditions' {
-	import type { PermissionResolvable } from 'discowork/discord.js';
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import CommandPrecondition from 'discowork/preconditions/CommandPrecondition';
+declare module 'preconditions/implementations/GuildPermissionsPreconditions' {
+	import type { PermissionResolvable } from 'discord.js';
+	import type CommandContext from 'commands/interfaces/CommandContext';
+	import CommandPrecondition from 'preconditions/CommandPrecondition';
 	export default class GuildPermissionsPrecondition extends CommandPrecondition {
 	    readonly requiredPermissions: PermissionResolvable;
 	    constructor(requiredPermissions: PermissionResolvable);
@@ -383,10 +383,10 @@ declare module 'discowork/preconditions/implementations/GuildPermissionsPrecondi
 	}
 
 }
-declare module 'discowork/preconditions/implementations/OwnerPrecondition' {
-	import type { Snowflake } from 'discowork/discord.js';
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import CommandPrecondition from 'discowork/preconditions/CommandPrecondition';
+declare module 'preconditions/implementations/OwnerPrecondition' {
+	import type { Snowflake } from 'discord.js';
+	import type CommandContext from 'commands/interfaces/CommandContext';
+	import CommandPrecondition from 'preconditions/CommandPrecondition';
 	export default class OwnerPrecondition extends CommandPrecondition {
 	    ownerIDS: Snowflake[];
 	    constructor(ownerIDS: Snowflake[]);
@@ -394,48 +394,48 @@ declare module 'discowork/preconditions/implementations/OwnerPrecondition' {
 	}
 
 }
-declare module 'discowork/preconditions/implementations/RequiresGuildPrecondition' {
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import CommandPrecondition from 'discowork/preconditions/CommandPrecondition';
+declare module 'preconditions/implementations/RequiresGuildPrecondition' {
+	import type CommandContext from 'commands/interfaces/CommandContext';
+	import CommandPrecondition from 'preconditions/CommandPrecondition';
 	export default class RequiresGuildPrecondition extends CommandPrecondition {
 	    protected validateInternally(context: CommandContext<unknown>): Promise<boolean>;
 	}
 
 }
-declare module 'discowork/preconditions/implementations/RequiresSubCommandsGroupsPrecondition' {
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import CommandPrecondition from 'discowork/preconditions/CommandPrecondition';
+declare module 'preconditions/implementations/RequiresSubCommandsGroupsPrecondition' {
+	import type CommandContext from 'commands/interfaces/CommandContext';
+	import CommandPrecondition from 'preconditions/CommandPrecondition';
 	export default class RequiresSubCommandsGroupsPrecondition extends CommandPrecondition {
 	    protected validateInternally(context: CommandContext<unknown>): Promise<boolean>;
 	}
 
 }
-declare module 'discowork/preconditions/implementations/RequiresSubCommandsPrecondition' {
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import CommandPrecondition from 'discowork/preconditions/CommandPrecondition';
+declare module 'preconditions/implementations/RequiresSubCommandsPrecondition' {
+	import type CommandContext from 'commands/interfaces/CommandContext';
+	import CommandPrecondition from 'preconditions/CommandPrecondition';
 	export default class RequiresSubCommandsPrecondition extends CommandPrecondition {
 	    protected validateInternally(context: CommandContext<unknown>): Promise<boolean>;
 	}
 
 }
-declare module 'discowork/preconditions/interfaces/CommandWithPreconditions' {
-	import type CommandPrecondition from 'discowork/preconditions/CommandPrecondition';
+declare module 'preconditions/interfaces/CommandWithPreconditions' {
+	import type CommandPrecondition from 'preconditions/CommandPrecondition';
 	export default interface CommandWithPreconditions {
 	    preconditions: CommandPrecondition[];
 	}
 
 }
-declare module 'discowork/preconditions/main' {
-	import type { PermissionResolvable } from 'discowork/discord.js';
-	import type CommandPrecondition from 'discowork/preconditions/CommandPrecondition';
-	import GuildPermissionsPreconditions from 'discowork/preconditions/implementations/GuildPermissionsPreconditions';
-	import type CommandWithPreconditions from 'discowork/preconditions/interfaces/CommandWithPreconditions';
-	import type OwnerPrecondition from 'discowork/preconditions/implementations/OwnerPrecondition';
-	import RequiresGuildPrecondition from 'discowork/preconditions/implementations/RequiresGuildPrecondition';
-	import RequiresSubCommandsPrecondition from 'discowork/preconditions/implementations/RequiresSubCommandsPrecondition';
-	import RequiresSubCommandsGroupsPrecondition from 'discowork/preconditions/implementations/RequiresSubCommandsGroupsPrecondition';
-	import type CommandInterface from 'discowork/commands/interfaces/CommandInterface';
-	import ConstructorType from 'discowork/types/ConstructorType';
+declare module 'preconditions/main' {
+	import type { PermissionResolvable } from 'discord.js';
+	import type CommandPrecondition from 'preconditions/CommandPrecondition';
+	import GuildPermissionsPreconditions from 'preconditions/implementations/GuildPermissionsPreconditions';
+	import type CommandWithPreconditions from 'preconditions/interfaces/CommandWithPreconditions';
+	import type OwnerPrecondition from 'preconditions/implementations/OwnerPrecondition';
+	import RequiresGuildPrecondition from 'preconditions/implementations/RequiresGuildPrecondition';
+	import RequiresSubCommandsPrecondition from 'preconditions/implementations/RequiresSubCommandsPrecondition';
+	import RequiresSubCommandsGroupsPrecondition from 'preconditions/implementations/RequiresSubCommandsGroupsPrecondition';
+	import type CommandInterface from 'commands/interfaces/CommandInterface';
+	import ConstructorType from 'types/ConstructorType';
 	export class PreconditionUtils {
 	    static commandContainsPreconditions(command: unknown): command is CommandWithPreconditions;
 	}
@@ -459,8 +459,8 @@ declare module 'discowork/preconditions/main' {
 	export { CommandPreconditions };
 
 }
-declare module 'discowork/processors/commands/CommandProcessorOptions' {
-	import type { Snowflake } from 'discowork/discord-api-types';
+declare module 'processors/commands/CommandProcessorOptions' {
+	import type { Snowflake } from 'discord-api-types';
 	export default interface CommandProcessorOptions {
 	    rootDirectory: string;
 	    subCommandsDirectory: string;
@@ -470,14 +470,14 @@ declare module 'discowork/processors/commands/CommandProcessorOptions' {
 	}
 
 }
-declare module 'discowork/processors/commands/CommandProcessor' {
-	import { Collection, Interaction } from 'discowork/discord.js';
-	import Command from 'discowork/commands/classes/Command';
-	import SubCommand from 'discowork/commands/classes/SubCommand';
-	import SubCommandGroup from 'discowork/commands/classes/SubCommandGroup';
-	import CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import TypedEventEmitter from 'discowork/events/TypedEventEmitter';
-	import CommandProcessorOptions from 'discowork/processors/commands/CommandProcessorOptions';
+declare module 'processors/commands/CommandProcessor' {
+	import { Collection, Interaction } from 'discord.js';
+	import Command from 'commands/classes/Command';
+	import SubCommand from 'commands/classes/SubCommand';
+	import SubCommandGroup from 'commands/classes/SubCommandGroup';
+	import CommandContext from 'commands/interfaces/CommandContext';
+	import TypedEventEmitter from 'events/TypedEventEmitter';
+	import CommandProcessorOptions from 'processors/commands/CommandProcessorOptions';
 	export default class CommandProcessor extends TypedEventEmitter<"load" | "command_import" | "command_module_no_default_export" | "wrong_command_type"> {
 	    #private;
 	    static DEFAULT_COMMAND_PROCESSOR_OPTIONS: CommandProcessorOptions & Record<string, unknown>;
@@ -490,9 +490,9 @@ declare module 'discowork/processors/commands/CommandProcessor' {
 	}
 
 }
-declare module 'discowork/rest/DeployHandler' {
-	import type { Snowflake } from 'discowork/discord-api-types/v9';
-	import type CommandProcessor from 'discowork/processors/commands/CommandProcessor';
+declare module 'rest/DeployHandler' {
+	import type { Snowflake } from 'discord-api-types/v9';
+	import type CommandProcessor from 'processors/commands/CommandProcessor';
 	export default class DeployHandler {
 	    #private;
 	    protected client: Snowflake;
@@ -505,11 +505,11 @@ declare module 'discowork/rest/DeployHandler' {
 	}
 
 }
-declare module 'discowork/rest/ClientDeployHandler' {
-	import type { Guild } from 'discowork/discord.js';
-	import type SimpleClient from 'discowork/client/SimpleClient';
-	import type CommandContext from 'discowork/commands/interfaces/CommandContext';
-	import DeployHandler from 'discowork/rest/DeployHandler';
+declare module 'rest/ClientDeployHandler' {
+	import type { Guild } from 'discord.js';
+	import type SimpleClient from 'client/SimpleClient';
+	import type CommandContext from 'commands/interfaces/CommandContext';
+	import DeployHandler from 'rest/DeployHandler';
 	export default class ClientDeployHandler extends DeployHandler {
 	    #private;
 	    constructor(client: SimpleClient, debug: boolean);
@@ -521,9 +521,9 @@ declare module 'discowork/rest/ClientDeployHandler' {
 	}
 
 }
-declare module 'discowork/client/SimpleClientOptions' {
-	import type { ClientOptions, Snowflake } from 'discowork/discord.js';
-	import type CommandProcessorOptions from 'discowork/processors/commands/CommandProcessorOptions';
+declare module 'client/SimpleClientOptions' {
+	import type { ClientOptions, Snowflake } from 'discord.js';
+	import type CommandProcessorOptions from 'processors/commands/CommandProcessorOptions';
 	export default interface SimpleClientOptions extends ClientOptions, CommandProcessorOptions {
 	    debug?: boolean;
 	    token?: string;
@@ -532,13 +532,13 @@ declare module 'discowork/client/SimpleClientOptions' {
 	}
 
 }
-declare module 'discowork/client/SimpleClient' {
-	import type { ClientEvents, ClientOptions } from 'discowork/discord.js';
-	import { Client } from 'discowork/discord.js';
-	import type TypedEventEmitter from 'discowork/events/TypedEventEmitter';
-	import CommandProcessor from 'discowork/processors/commands/CommandProcessor';
-	import ClientDeployHandler from 'discowork/rest/ClientDeployHandler';
-	import type SimpleClientOptions from 'discowork/client/SimpleClientOptions';
+declare module 'client/SimpleClient' {
+	import type { ClientEvents, ClientOptions } from 'discord.js';
+	import { Client } from 'discord.js';
+	import type TypedEventEmitter from 'events/TypedEventEmitter';
+	import CommandProcessor from 'processors/commands/CommandProcessor';
+	import ClientDeployHandler from 'rest/ClientDeployHandler';
+	import type SimpleClientOptions from 'client/SimpleClientOptions';
 	export default class SimpleClient extends Client implements TypedEventEmitter<keyof ClientEvents> {
 	    #private;
 	    readonly commandProcessor: CommandProcessor;
@@ -550,8 +550,8 @@ declare module 'discowork/client/SimpleClient' {
 	}
 
 }
-declare module 'discowork/collections/LimitedCapacityCollection' {
-	import { Collection } from 'discowork/discord.js';
+declare module 'collections/LimitedCapacityCollection' {
+	import { Collection } from 'discord.js';
 	export class LimitedCapacityCollection<K, V> extends Collection<K, V> {
 	    #private;
 	    protected readonly capacity: number;
@@ -560,7 +560,7 @@ declare module 'discowork/collections/LimitedCapacityCollection' {
 	}
 
 }
-declare module 'discowork/localization/Locale' {
+declare module 'localization/Locale' {
 	 enum Locale {
 	    af = "af",
 	    af_NA = "af-NA",
@@ -1297,7 +1297,7 @@ declare module 'discowork/localization/Locale' {
 	export default Locale;
 
 }
-declare module 'discowork/localization/resources/LocaleResource' {
+declare module 'localization/resources/LocaleResource' {
 	export default class LocaleResource<S, T> {
 	    readonly locale: S;
 	    readonly structure: T;
@@ -1305,8 +1305,8 @@ declare module 'discowork/localization/resources/LocaleResource' {
 	}
 
 }
-declare module 'discowork/localization/resources/ResourceValue' {
-	import type { VariableSettings } from 'discowork/localization/Localizer'; class ResourceValue<A extends string = never> {
+declare module 'localization/resources/ResourceValue' {
+	import type { VariableSettings } from 'localization/Localizer'; class ResourceValue<A extends string = never> {
 	    #private;
 	    args: A[];
 	    get Value(): string;
@@ -1315,11 +1315,11 @@ declare module 'discowork/localization/resources/ResourceValue' {
 	export default ResourceValue;
 
 }
-declare module 'discowork/localization/Localizer' {
-	import type ClassLoader from 'discowork/io/loaders/ClassLoader';
-	import type Locale from 'discowork/localization/Locale';
-	import type LocaleResource from 'discowork/localization/resources/LocaleResource';
-	import type ResourceValue from 'discowork/localization/resources/ResourceValue';
+declare module 'localization/Localizer' {
+	import type ClassLoader from 'io/loaders/ClassLoader';
+	import type Locale from 'localization/Locale';
+	import type LocaleResource from 'localization/resources/LocaleResource';
+	import type ResourceValue from 'localization/resources/ResourceValue';
 	export type VariableSettings = {
 	    prefix: string;
 	    suffix: string;
@@ -1337,10 +1337,10 @@ declare module 'discowork/localization/Localizer' {
 	}
 
 }
-declare module 'discowork/options/custom/PageOption' {
-	import type { CommandInteraction } from 'discowork/discord.js';
-	import IntegerOption from 'discowork/options/classes/IntegerOption';
-	import type { ILazyApply } from 'discowork/options/interfaces/ILazyApply';
+declare module 'options/custom/PageOption' {
+	import type { CommandInteraction } from 'discord.js';
+	import IntegerOption from 'options/classes/IntegerOption';
+	import type { ILazyApply } from 'options/interfaces/ILazyApply';
 	export default class PageOption extends IntegerOption implements ILazyApply {
 	    readonly lazyApply: true;
 	    readonly itemsPerPage: number;
@@ -1349,7 +1349,7 @@ declare module 'discowork/options/custom/PageOption' {
 	}
 
 }
-declare module 'discowork/reflect/TypedReflect' {
+declare module 'reflect/TypedReflect' {
 	export default class TypedReflect {
 	    static defineProperty<T extends object>(target: T, propertyKey: keyof T, attributes: PropertyDescriptor): boolean;
 	    static deleteProperty<T extends object>(target: T, propertyKey: keyof T): boolean;
@@ -1367,7 +1367,7 @@ declare module 'discowork/reflect/TypedReflect' {
 	}
 
 }
-declare module 'discowork/reflect/ReflectWrite' {
+declare module 'reflect/ReflectWrite' {
 	 type GetterSetter<T> = {
 	    get: () => T;
 	    set: (v: T) => void;
