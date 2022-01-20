@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "A simple framework made for discord.js.",
   "main": "dist/index.js",
-  "types": "typings/index.d.ts",
+  "types": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --build tsconfig.json",
     "example": "npm run build && node --experimental-specifier-resolution=node dist/example/index.js",
-    "gen": "dts-generator --project ./ --out ./typings/index.d.ts --exclude node_modules/** --exclude **/*index.ts --exclude **/example/**",
+    "gen": "dts-generator --project ./ --out ./index.d.ts --exclude node_modules/** --exclude **/*index.ts --exclude **/example/**",
     "prepare": "npm run build"
   },
   "files": [
