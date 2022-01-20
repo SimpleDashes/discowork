@@ -6,9 +6,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "tsc --outDir ./dist",
     "example": "npm run build && node --experimental-specifier-resolution=node dist/example/index.js",
-    "install": "tsc --outDir ./node_modules/discowork --rootDir ./src"
+    "install": "tsc"
   },
   "files": [
     "dist"
