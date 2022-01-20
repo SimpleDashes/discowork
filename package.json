@@ -13,7 +13,8 @@
   },
   "files": [
     "dist/**",
-    "typings/**"
+    "typings/**",
+    "src/**"
   ],
   "author": "SimpleDashes",
   "license": "ISC",
