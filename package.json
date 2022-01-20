@@ -1,18 +1,16 @@
 {
   "name": "discowork",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "A simple framework made for discord.js.",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --outDir ./dist",
-    "example": "npm run build && node --experimental-specifier-resolution=node dist/example/index.js",
-    "install": "tsc --build tsconfig.json && rimraf src"
+    "build": "tsc",
+    "example": "npm run build && node --experimental-specifier-resolution=node dist/example/index.js"
   },
   "files": [
-    "tsconfig.json",
-    "src"
+    "dist"
   ],
   "author": "SimpleDashes",
   "license": "ISC",
