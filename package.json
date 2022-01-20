@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc --outDir ./dist",
     "example": "npm run build && node --experimental-specifier-resolution=node dist/example/index.js",
-    "install": "tsc"
+    "install": "tsc --build tsconfig.json"
   },
   "files": [
     "dist"
