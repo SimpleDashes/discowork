@@ -1,6 +1,6 @@
 import { SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import ConstructorType from "../../types/ConstructorType";
-import { CommandContextOnlyInteractionAndClient } from "../interfaces";
+import { CommandContextOnlyInteractionAndClient } from "../interfaces/CommandContext";
 import CommandContext from "../interfaces/CommandContext";
 import WorkerCommand from "../interfaces/WorkerCommand";
 

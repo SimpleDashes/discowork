@@ -1,5 +1,6 @@
 import { Chance } from "chance";
 import Localizer from "../Localizer";
+import type {VariableSettings} from "../Localizer"
 
 class ResourceValue<A extends string = never> {
   static #CHANCE = Chance();
@@ -24,7 +25,7 @@ class ResourceValue<A extends string = never> {
   public constructor(
     builder: (placeholder: Record<A, string>) => string[] | string,
     args: A[],
-    variableSettings = Localizer.defaultVariableSettings
+    variableSettings: VariableSettings = Localizer.defaultVariableSettings
   ) {
     this.#builder = builder;
 
