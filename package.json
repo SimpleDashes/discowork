@@ -8,8 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "example": "npm run build && node --experimental-specifier-resolution=node dist/example/index.js",
-    "gen": "dts-generator --project ./ --out ./dist/index.d.ts --exclude node_modules/** --exclude **/*index.ts --exclude **/example/**",
-    "install": "tsc --outDir ./"
+    "install": "tsc --outDir ./ --rootDir ./dist"
   },
   "files": [
     "dist"
