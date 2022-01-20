@@ -11,6 +11,7 @@
     "install": "tsc --build tsconfig.json"
   },
   "files": [
+    "tsconfig.json",
     "dist"
   ],
   "author": "SimpleDashes",
