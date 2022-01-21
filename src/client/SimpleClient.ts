@@ -2,13 +2,14 @@ import type { ClientEvents, ClientOptions } from "discord.js";
 import { Client } from "discord.js";
 import { MethodDecoratorFactories } from "../decorators/MethodDecorators";
 import type TypedEventEmitter from "../events/TypedEventEmitter";
+import { NewEvent } from "../events/TypedEventEmitter";
 import CommandProcessor from "../processors/commands/CommandProcessor";
 import ClientDeployHandler from "../rest/ClientDeployHandler";
 import type SimpleClientOptions from "./SimpleClientOptions";
 
 export default class SimpleClient
   extends Client
-  implements TypedEventEmitter<keyof ClientEvents>
+  implements TypedEventEmitter<[NewEvent<keyof ClientEvents>]>
 {
   public readonly commandProcessor: CommandProcessor;
   public override readonly options: ClientOptions &

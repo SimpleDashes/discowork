@@ -1,7 +1,7 @@
-import { CommandContext, SubCommand } from "../../../../../commands";
-import CommandInformation from "../../../../../commands/decorators/CommandInformation";
-import { CommandContextOnlyInteractionAndClient } from "../../../../../commands/interfaces/CommandContext";
-import { ConstructorType } from "../../../../../types";
+import { CommandContext, SubCommand } from "../../../../../../commands";
+import CommandInformation from "../../../../../../commands/decorators/CommandInformation";
+import { CommandContextOnlyInteractionAndClient } from "../../../../../../commands/interfaces/CommandContext";
+import { ConstructorType } from "../../../../../../types";
 
 @CommandInformation({
   name: "lel",

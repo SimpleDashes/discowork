@@ -10,7 +10,7 @@ import CommandContext, {
 import CommandInterface from "../../commands/interfaces/CommandInterface";
 import { Logger } from "../../container";
 import { RunOnce, RunOnceWrapper } from "../../decorators";
-import TypedEventEmitter from "../../events/TypedEventEmitter";
+import TypedEventEmitter, { NewEvent } from "../../events/TypedEventEmitter";
 import Directory from "../../io/directories/Directory";
 import DirectoryFactory from "../../io/directories/DirectoryFactory";
 import ClassLoader from "../../io/loaders/ClassLoader";
@@ -31,11 +31,20 @@ import WorkerCommand from "../../commands/interfaces/WorkerCommand";
 import { commandInformationMetadataFactory } from "../../commands";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
+
 export default class CommandProcessor extends TypedEventEmitter<
-  | "load"
-  | "command_import"
-  | "command_module_no_default_export"
-  | "wrong_command_type"
+  [
+    NewEvent<
+      | "load"
+      | "command_import"
+      | "command_module_no_default_export"
+      | "wrong_command_type"
+    >,
+    NewEvent<
+      "before_command_trigger" | "after_command_trigger",
+      [{ context: CommandContext<unknown> }]
+    >
+  ]
 > {
   public static DEFAULT_COMMAND_PROCESSOR_OPTIONS: CommandProcessorOptions &
     Record<string, unknown> = {
@@ -196,6 +205,8 @@ export default class CommandProcessor extends TypedEventEmitter<
       directoryName
     );
 
+    const response: ClassLoaderResponse<S>[] = [];
+
     if (fsSync.existsSync(realPath)) {
       const sysDirectory = (
         await fs.readdir(realPath, {
@@ -210,12 +221,14 @@ export default class CommandProcessor extends TypedEventEmitter<
             !filePath.endsWith(this.#options.subCommandsDirectory)) ||
           baseDirectory === this.#options.subCommandsDirectory
         ) {
-          await this.#registerSubcommandOrSubcommandGroup(
-            loadedCommandResponse,
-            filePath,
-            collection,
-            constructor,
-            baseDirectory
+          response.push(
+            ...(await this.#registerSubcommandOrSubcommandGroup(
+              loadedCommandResponse,
+              filePath,
+              collection,
+              constructor,
+              baseDirectory
+            ))
           );
         }
       }
@@ -223,8 +236,10 @@ export default class CommandProcessor extends TypedEventEmitter<
 
     const directory = new Directory(realPath);
     const loader = new ClassLoader<S>(constructor, directory);
+
     this.#listenToCommandClassLoader(loader);
-    const response = await loader.loadAll();
+
+    response.push(...(await loader.loadAll()));
 
     const loadedObjects = response.map((o) => o.object);
     const command = collection.get(loadedCommandResponse.object);
@@ -401,7 +416,11 @@ export default class CommandProcessor extends TypedEventEmitter<
 
     executorContext.args = recordArgs;
 
+    this.emit("before_command_trigger", { context: executorContext });
+
     await executorCommand.trigger(executorContext);
+
+    this.emit("after_command_trigger", { context: executorContext });
   }
 
   async #verifyPreconditions(

@@ -5,12 +5,12 @@ import Extensions from "../extensions/Extensions";
 import { Logger } from "../../container";
 import type Directory from "../directories/Directory";
 import { pathToFileURL } from "url";
-import TypedEventEmitter from "../../events/TypedEventEmitter";
+import TypedEventEmitter, { NewEvent } from "../../events/TypedEventEmitter";
 import ConstructorType from "../../types/ConstructorType";
 import { getRootInformation, runtimeType } from "../common";
 
 export default class ClassLoader<T> extends TypedEventEmitter<
-  "import" | "no_default_export" | "wrong_type"
+  [NewEvent<"import" | "no_default_export" | "wrong_type">]
 > {
   #klass: ConstructorType<[...never], T>;
   #extension: Extensions = Extensions.JS;
@@ -21,7 +21,6 @@ export default class ClassLoader<T> extends TypedEventEmitter<
     ...directories: Directory[]
   ) {
     super();
-
     this.#klass = klass;
     this.#directories = directories;
   }
@@ -82,7 +81,11 @@ export default class ClassLoader<T> extends TypedEventEmitter<
           directory,
           object,
         });
-        Logger.log(`Imported a ${klass.name} at ${realPath}.`);
+        Logger.log(
+          `Imported a ${klass.name} at ${realPath} which is a instance of ${
+            this.#klass.name
+          }`
+        );
         this.emit("import");
       } else {
         Logger.error(
