@@ -139,13 +139,16 @@ export default class CommandProcessor extends TypedEventEmitter<
       );
 
       for (const res of subCommandGroups) {
-        command.addSubcommandGroup(res.object);
-        await this.#registerSubcommandOrSubcommandGroup(
-          res,
-          this.#options.subCommandsDirectory,
-          this.subCommands,
-          subCommandsConstructor
-        );
+        const group = res.object;
+        command.addSubcommandGroup(group);
+        const groupSubCommands =
+          await this.#registerSubcommandOrSubcommandGroup(
+            res,
+            this.#options.subCommandsDirectory,
+            this.subCommands,
+            subCommandsConstructor
+          );
+        groupSubCommands.forEach((res) => group.addSubcommand(res.object));
       }
     }
 

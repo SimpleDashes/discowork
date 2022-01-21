@@ -15,6 +15,7 @@ const bot = new SimpleClient({
   rootDirectory: path.join("example", "commands"),
   developmentGuild: process.env["DEV_GUILD"],
   token: process.env["TOKEN"],
+  debug: true,
 });
 
 bot.once("ready", async () => {
