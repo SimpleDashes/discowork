@@ -39,7 +39,7 @@ export default class CommandProcessor extends TypedEventEmitter<
 > {
   public static DEFAULT_COMMAND_PROCESSOR_OPTIONS: CommandProcessorOptions &
     Record<string, unknown> = {
-    rootDirectory: path.join("dist", "commands"),
+    rootDirectory: path.join("lib", "commands"),
     subCommandsDirectory: "subcommands",
     subCommandGroupsDirectory: "groups",
     wrapperDirectory: "wrapper",
