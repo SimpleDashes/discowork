@@ -30,7 +30,9 @@ export default class DirectoryFactory {
 
   async #build(root = this.root): Promise<Directory[]> {
     const files = (await fs.readdir(root, { withFileTypes: true })).filter(
-      (file) => !this.excludes.includes(file.name) && file.isDirectory()
+      (file) => {
+        return !this.excludes.includes(file.name) && file.isDirectory();
+      }
     );
 
     const directories: Directory[] = [];

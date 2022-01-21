@@ -86,7 +86,9 @@ export default class ClassLoader<T> extends TypedEventEmitter<
         this.emit("import");
       } else {
         Logger.error(
-          `Failed to import a ${klass.name} at ${realPath} (wrong type)`
+          `Failed to import a ${
+            klass.name
+          } at ${realPath}, didn't match expected type: ${this.#klass.name}`
         );
         this.emit("wrong_type");
       }

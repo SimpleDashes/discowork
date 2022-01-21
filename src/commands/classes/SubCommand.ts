@@ -4,16 +4,14 @@ import { CommandContextOnlyInteractionAndClient } from "../interfaces/CommandCon
 import CommandContext from "../interfaces/CommandContext";
 import WorkerCommand from "../interfaces/WorkerCommand";
 
-
 export default abstract class SubCommand<A, CTX extends CommandContext<A>>
   extends SlashCommandSubcommandBuilder
   implements WorkerCommand<A, CTX>
 {
   public args!: A;
   public abstract trigger(context: CTX): Promise<void>;
-  public abstract contextConstructor(): ConstructorType<
-    [CommandContextOnlyInteractionAndClient],
-    CTX
-  >;
+  public abstract contextConstructor():
+    | ConstructorType<[CommandContextOnlyInteractionAndClient], CTX>
+    | undefined;
   public abstract createArguments(): A;
 }

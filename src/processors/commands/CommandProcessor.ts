@@ -1,11 +1,12 @@
-
 import { Collection, Interaction } from "discord.js";
 import path from "path";
 import SimpleClient from "../../client/SimpleClient";
 import Command from "../../commands/classes/Command";
 import SubCommand from "../../commands/classes/SubCommand";
 import SubCommandGroup from "../../commands/classes/SubCommandGroup";
-import CommandContext, { CommandContextOnlyInteractionAndClient } from "../../commands/interfaces/CommandContext";
+import CommandContext, {
+  CommandContextOnlyInteractionAndClient,
+} from "../../commands/interfaces/CommandContext";
 import CommandInterface from "../../commands/interfaces/CommandInterface";
 import { Logger } from "../../container";
 import { RunOnce, RunOnceWrapper } from "../../decorators";
@@ -23,8 +24,8 @@ import RequiresSubCommandsPrecondition from "../../preconditions/implementations
 import CommandWithPreconditions from "../../preconditions/interfaces/CommandWithPreconditions";
 import ConstructorType from "../../types/ConstructorType";
 import CommandProcessorOptions from "./CommandProcessorOptions";
-import fs from "fs/promises"
-import fsSync from "fs"
+import fs from "fs/promises";
+import fsSync from "fs";
 import assert from "assert";
 import WorkerCommand from "../../commands/interfaces/WorkerCommand";
 import { commandInformationMetadataFactory } from "../../commands";
@@ -79,6 +80,8 @@ export default class CommandProcessor extends TypedEventEmitter<
     this.#options = options as CommandProcessorOptions;
 
     this.#directoryFactory = new DirectoryFactory(this.#options.rootDirectory, [
+      this.#options.subCommandsDirectory,
+      this.#options.subCommandGroupsDirectory,
       this.#options.wrapperDirectory,
     ]);
 
@@ -110,7 +113,9 @@ export default class CommandProcessor extends TypedEventEmitter<
       const commandResponse = response as ClassLoaderResponse<
         Command<unknown, CommandContext<unknown>>
       >;
+
       const command = commandResponse.object;
+
       this.#setMetadataInformationFromCommand(command);
 
       this.commands.set(command.name, command);
@@ -213,7 +218,7 @@ export default class CommandProcessor extends TypedEventEmitter<
       }
     }
 
-    const directory = new Directory(directoryName);
+    const directory = new Directory(realPath);
     const loader = new ClassLoader<S>(constructor, directory);
     this.#listenToCommandClassLoader(loader);
     const response = await loader.loadAll();
