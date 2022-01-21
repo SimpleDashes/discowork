@@ -1,2 +1,2 @@
-export * from './ClientDeployHandler';
-export * from './DeployHandler';
+export {default as ClientDeployHandler} from './ClientDeployHandler';
+export {default as DeployHandler} from './DeployHandler';

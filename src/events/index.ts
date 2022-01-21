@@ -1,1 +1,1 @@
-export * from './TypedEventEmitter';
+export {default as TypedEventEmitter} from './TypedEventEmitter';

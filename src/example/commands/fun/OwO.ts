@@ -1,7 +1,7 @@
-import { CommandContextOnlyInteractionAndClient } from "../../../commands";
+
 import Command from "../../../commands/classes/Command";
 import CommandInformation from "../../../commands/decorators/CommandInformation";
-import CommandContext from "../../../commands/interfaces/CommandContext";
+import CommandContext, { CommandContextOnlyInteractionAndClient } from "../../../commands/interfaces/CommandContext";
 import BooleanOption from "../../../options/classes/BooleanOption";
 import { CommandPreconditions, Preconditions } from "../../../preconditions";
 import ConstructorType from "../../../types/ConstructorType";

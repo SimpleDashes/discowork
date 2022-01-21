@@ -1,2 +1,2 @@
-export * from './SimpleClient';
-export * from './SimpleClientOptions';
+export {default as SimpleClient} from './SimpleClient';
+export {default as SimpleClientOptions} from './SimpleClientOptions';

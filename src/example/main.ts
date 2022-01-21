@@ -12,7 +12,7 @@ dotenv.config();
 
 const bot = new SimpleClient({
   intents: ["GUILDS"],
-  rootDirectory: path.join("lib", "example", "commands"),
+  rootDirectory: path.join("example", "commands"),
   developmentGuild: process.env["DEV_GUILD"],
   token: process.env["TOKEN"],
 });

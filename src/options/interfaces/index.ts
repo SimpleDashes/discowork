@@ -1,2 +1,2 @@
-export * from './IDiscordOption';
-export * from "./ILazyApply"
+export {default as IDiscordOption} from './IDiscordOption';
+

@@ -1,5 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
+import { getRootInformation } from "../common";
 import Directory from "./Directory";
 
 export default class DirectoryFactory {
@@ -23,7 +24,8 @@ export default class DirectoryFactory {
    * Builds the root directory subdirectories recursively.
    */
   public async build(): Promise<Directory[]> {
-    return await this.#build(this.root);
+    const rootPath = path.join(getRootInformation().root, this.root);
+    return await this.#build(rootPath);
   }
 
   async #build(root = this.root): Promise<Directory[]> {

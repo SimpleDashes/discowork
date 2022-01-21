@@ -1,2 +1,2 @@
 export * from './ReflectWrite';
-export * from './TypedReflect';
+export {default as TypedReflect} from './TypedReflect';

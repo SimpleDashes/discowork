@@ -1,1 +1,1 @@
-export * from './IHasNameAndDescription';
+export {default as IHasNameAndDescription} from './IHasNameAndDescription';

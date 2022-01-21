@@ -2,11 +2,10 @@
 import { Collection, Interaction } from "discord.js";
 import path from "path";
 import SimpleClient from "../../client/SimpleClient";
-import { commandInformationMetadataFactory, CommandContextOnlyInteractionAndClient } from "../../commands";
 import Command from "../../commands/classes/Command";
 import SubCommand from "../../commands/classes/SubCommand";
 import SubCommandGroup from "../../commands/classes/SubCommandGroup";
-import CommandContext from "../../commands/interfaces/CommandContext";
+import CommandContext, { CommandContextOnlyInteractionAndClient } from "../../commands/interfaces/CommandContext";
 import CommandInterface from "../../commands/interfaces/CommandInterface";
 import { Logger } from "../../container";
 import { RunOnce, RunOnceWrapper } from "../../decorators";
@@ -28,9 +27,9 @@ import fs from "fs/promises"
 import fsSync from "fs"
 import assert from "assert";
 import WorkerCommand from "../../commands/interfaces/WorkerCommand";
+import { commandInformationMetadataFactory } from "../../commands";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
-
 export default class CommandProcessor extends TypedEventEmitter<
   | "load"
   | "command_import"
@@ -39,7 +38,7 @@ export default class CommandProcessor extends TypedEventEmitter<
 > {
   public static DEFAULT_COMMAND_PROCESSOR_OPTIONS: CommandProcessorOptions &
     Record<string, unknown> = {
-    rootDirectory: path.join("lib", "commands"),
+    rootDirectory: path.join("commands"),
     subCommandsDirectory: "subcommands",
     subCommandGroupsDirectory: "groups",
     wrapperDirectory: "wrapper",

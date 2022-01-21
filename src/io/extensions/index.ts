@@ -1,1 +1,1 @@
-export * from './Extensions';
+export {default as Extensions} from './Extensions';

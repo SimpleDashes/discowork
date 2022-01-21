@@ -1,3 +1,5 @@
+import "reflect-metadata"
+
 import type { Snowflake } from "discord-api-types";
 import { SnowflakeUtil, Collection } from "discord.js";
 

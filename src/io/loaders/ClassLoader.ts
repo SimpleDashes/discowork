@@ -1,27 +1,17 @@
 import type ClassLoaderResponse from "./ClassLoaderResponse";
 import fs from "fs/promises";
-import path, { join } from "path";
+import path from "path";
 import Extensions from "../extensions/Extensions";
 import { Logger } from "../../container";
 import type Directory from "../directories/Directory";
 import { pathToFileURL } from "url";
-import { readFileSync } from "fs";
 import TypedEventEmitter from "../../events/TypedEventEmitter";
 import ConstructorType from "../../types/ConstructorType";
+import { getRootInformation, runtimeType } from "../common";
 
-const enum runtimeType {
-  module,
-  commonJS,
-}
-
-type RootInformation = {
-  type: runtimeType;
-};
 export default class ClassLoader<T> extends TypedEventEmitter<
   "import" | "no_default_export" | "wrong_type"
 > {
-  static #ROOT_INFORMATION: RootInformation;
-
   #klass: ConstructorType<[...never], T>;
   #extension: Extensions = Extensions.JS;
   #directories: Directory[];
@@ -34,26 +24,6 @@ export default class ClassLoader<T> extends TypedEventEmitter<
 
     this.#klass = klass;
     this.#directories = directories;
-
-    if (!ClassLoader.#ROOT_INFORMATION) {
-      const cwd = process.cwd();
-
-      let info: RootInformation;
-
-      try {
-        const file = JSON.parse(
-          readFileSync(join(cwd, "package.json"), "utf8")
-        );
-        info = {
-          type:
-            file.type === "module" ? runtimeType.module : runtimeType.commonJS,
-        };
-      } catch {
-        info = { type: runtimeType.commonJS };
-      }
-
-      ClassLoader.#ROOT_INFORMATION = info;
-    }
   }
 
   public async loadAll(): Promise<ClassLoaderResponse<T>[]> {
@@ -88,7 +58,7 @@ export default class ClassLoader<T> extends TypedEventEmitter<
       const realPath = path.join(dir, file.name);
 
       const importPath =
-        ClassLoader.#ROOT_INFORMATION.type === runtimeType.module
+        getRootInformation().type === runtimeType.module
           ? pathToFileURL(realPath).pathname
           : path.relative(__dirname, realPath);
 

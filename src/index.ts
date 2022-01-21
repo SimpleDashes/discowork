@@ -10,7 +10,7 @@ export * from './interfaces';
 export * from './io';
 export * from './localization';
 export * from './options';
-export * from './preconditions/main';
+export * from './preconditions';
 export * from './processors';
 export * from './reflect';
 export * from './rest';

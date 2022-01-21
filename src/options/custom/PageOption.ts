@@ -1,7 +1,7 @@
 import type { CommandInteraction } from "discord.js";
+import { MathUtils } from "../../utils";
 
 import IntegerOption from "../classes/IntegerOption";
-import { clamp } from "@stdlib/math/base/special";
 import type { ILazyApply } from "../interfaces/ILazyApply";
 
 export default class PageOption extends IntegerOption implements ILazyApply {
@@ -18,7 +18,7 @@ export default class PageOption extends IntegerOption implements ILazyApply {
       throw "PageOption apply: res argument shall be passed.";
     }
 
-    return clamp(
+    return MathUtils.clamp(
       super.apply(interaction) ?? 1,
       1,
       Math.ceil(res.length / this.itemsPerPage)

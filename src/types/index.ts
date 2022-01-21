@@ -1,1 +1,1 @@
-export * from './ConstructorType';
+export {default as ConstructorType} from './ConstructorType';
