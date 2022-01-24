@@ -6,4 +6,5 @@ export default interface CommandProcessorOptions {
   subCommandGroupsDirectory: string;
   wrapperDirectory: string;
   ownerIDS: Snowflake[];
+  catchCommandExceptions: boolean;
 }

@@ -5,9 +5,10 @@ import Extensions from "../extensions/Extensions";
 import { Logger } from "../../container";
 import type Directory from "../directories/Directory";
 import { pathToFileURL } from "url";
-import TypedEventEmitter, { NewEvent } from "../../events/TypedEventEmitter";
-import ConstructorType from "../../types/ConstructorType";
 import { getRootInformation, runtimeType } from "../common";
+import { TypedEventEmitter } from "../../events";
+import type { NewEvent } from "../../events/TypedEventEmitter";
+import type { ConstructorType } from "../../types";
 
 export default class ClassLoader<T> extends TypedEventEmitter<
   [NewEvent<"import" | "no_default_export" | "wrong_type">]
@@ -69,7 +70,7 @@ export default class ClassLoader<T> extends TypedEventEmitter<
             this.#klass.name
           } at ${realPath}`
         );
-        this.emit("no_default_export");
+        await this.emitAsync("no_default_export");
         continue;
       }
 
@@ -86,14 +87,14 @@ export default class ClassLoader<T> extends TypedEventEmitter<
             this.#klass.name
           }`
         );
-        this.emit("import");
+        await this.emitAsync("import");
       } else {
         Logger.error(
           `Failed to import a ${
             klass.name
           } at ${realPath}, didn't match expected type: ${this.#klass.name}`
         );
-        this.emit("wrong_type");
+        await this.emitAsync("wrong_type");
       }
     }
 

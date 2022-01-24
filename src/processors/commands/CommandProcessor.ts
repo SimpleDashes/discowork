@@ -1,33 +1,34 @@
-import { Collection, Interaction } from "discord.js";
+import type { Interaction } from "discord.js";
+import { Collection } from "discord.js";
 import path from "path";
 import SimpleClient from "../../client/SimpleClient";
 import Command from "../../commands/classes/Command";
 import SubCommand from "../../commands/classes/SubCommand";
 import SubCommandGroup from "../../commands/classes/SubCommandGroup";
-import CommandContext, {
-  CommandContextOnlyInteractionAndClient,
-} from "../../commands/interfaces/CommandContext";
-import CommandInterface from "../../commands/interfaces/CommandInterface";
+import type { CommandContextOnlyInteractionAndClient } from "../../commands/interfaces/CommandContext";
+import type CommandContext from "../../commands/interfaces/CommandContext";
+import type CommandInterface from "../../commands/interfaces/CommandInterface";
 import { Logger } from "../../container";
 import { RunOnce, RunOnceWrapper } from "../../decorators";
-import TypedEventEmitter, { NewEvent } from "../../events/TypedEventEmitter";
+import type { NewEvent } from "../../events/TypedEventEmitter";
+import TypedEventEmitter from "../../events/TypedEventEmitter";
 import Directory from "../../io/directories/Directory";
 import DirectoryFactory from "../../io/directories/DirectoryFactory";
 import ClassLoader from "../../io/loaders/ClassLoader";
-import ClassLoaderResponse from "../../io/loaders/ClassLoaderResponse";
-import IDiscordOption from "../../options/interfaces/IDiscordOption";
+import type ClassLoaderResponse from "../../io/loaders/ClassLoaderResponse";
+import type IDiscordOption from "../../options/interfaces/IDiscordOption";
 import DiscordOptionHelper from "../../options/utils/DiscordOptionHelper";
 import { SetupPrecondition, PreconditionUtils } from "../../preconditions";
 import OwnerPrecondition from "../../preconditions/implementations/OwnerPrecondition";
 import RequiresSubCommandsGroupsPrecondition from "../../preconditions/implementations/RequiresSubCommandsGroupsPrecondition";
 import RequiresSubCommandsPrecondition from "../../preconditions/implementations/RequiresSubCommandsPrecondition";
-import CommandWithPreconditions from "../../preconditions/interfaces/CommandWithPreconditions";
-import ConstructorType from "../../types/ConstructorType";
-import CommandProcessorOptions from "./CommandProcessorOptions";
+import type CommandWithPreconditions from "../../preconditions/interfaces/CommandWithPreconditions";
+import type ConstructorType from "../../types/ConstructorType";
+import type CommandProcessorOptions from "./CommandProcessorOptions";
 import fs from "fs/promises";
 import fsSync from "fs";
 import assert from "assert";
-import WorkerCommand from "../../commands/interfaces/WorkerCommand";
+import type WorkerCommand from "../../commands/interfaces/WorkerCommand";
 import { commandInformationMetadataFactory } from "../../commands";
 
 type ArgsLoopListener<O> = (key: string, object: O) => void;
@@ -39,10 +40,6 @@ export default class CommandProcessor extends TypedEventEmitter<
       | "command_import"
       | "command_module_no_default_export"
       | "wrong_command_type"
-    >,
-    NewEvent<
-      "before_command_trigger" | "after_command_trigger",
-      [{ context: CommandContext<unknown> }]
     >
   ]
 > {
@@ -53,6 +50,7 @@ export default class CommandProcessor extends TypedEventEmitter<
     subCommandGroupsDirectory: "groups",
     wrapperDirectory: "wrapper",
     ownerIDS: [],
+    catchCommandExceptions: false,
   };
 
   public readonly commands: Collection<
@@ -98,11 +96,15 @@ export default class CommandProcessor extends TypedEventEmitter<
   }
 
   #listenToCommandClassLoader(classLoader: ClassLoader<unknown>): void {
-    classLoader.on("import", () => this.emit("command_import"));
-    classLoader.on("no_default_export", () =>
-      this.emit("command_module_no_default_export")
-    );
-    classLoader.on("wrong_type", () => this.emit("wrong_command_type"));
+    classLoader.on("import", async () => {
+      await this.emitAsync("command_import");
+    });
+    classLoader.on("no_default_export", async () => {
+      await this.emitAsync("command_module_no_default_export");
+    });
+    classLoader.on("wrong_type", async () => {
+      await this.emitAsync("wrong_command_type");
+    });
   }
 
   @RunOnce()
@@ -213,7 +215,6 @@ export default class CommandProcessor extends TypedEventEmitter<
           withFileTypes: true,
         })
       ).filter((file) => file.isDirectory());
-
       for (const file of sysDirectory) {
         const filePath = path.join(directoryName, file.name);
         if (
@@ -366,6 +367,8 @@ export default class CommandProcessor extends TypedEventEmitter<
       client: interaction.client,
     };
 
+    await this.beforeCommandTrigger?.call(this, baseContext);
+
     const contextConstructor = executorCommand.contextConstructor();
 
     const executorContext = contextConstructor
@@ -385,7 +388,8 @@ export default class CommandProcessor extends TypedEventEmitter<
         : true;
     };
 
-    if (!(await shouldExecuteCommand(command))) return;
+    const verifiedCommand = shouldExecuteCommand(command);
+    if (!verifiedCommand) return;
 
     const shouldExecuteInnerCommand = async (
       inner: CommandInterface
@@ -393,9 +397,13 @@ export default class CommandProcessor extends TypedEventEmitter<
       return inner === command ? true : await shouldExecuteCommand(inner);
     };
 
-    const inners = [executorParent, executorCommand];
+    const inners = [];
+    if (executorParent !== command) inners.push(executorParent);
+    if (executorCommand !== command) inners.push(executorCommand);
+
     for (const inner of inners) {
-      if (!(await shouldExecuteInnerCommand(inner))) return;
+      const verifiedInner = await shouldExecuteInnerCommand(inner);
+      if (!verifiedInner) return;
     }
 
     const recordArgs = (executorContext.args ?? {}) as Record<string, unknown>;
@@ -403,11 +411,9 @@ export default class CommandProcessor extends TypedEventEmitter<
     this.#loopCommandArguments(
       executorCommand,
       (k, o) => {
-        if (DiscordOptionHelper.isLazyApplyOption(o)) {
-          recordArgs[k] = o;
-        } else {
-          recordArgs[k] = o.apply(executorContext.interaction);
-        }
+        recordArgs[k] = DiscordOptionHelper.isLazyApplyOption(o)
+          ? o
+          : o.apply(executorContext.interaction);
       },
       (k, o) => {
         recordArgs[k] = o;
@@ -416,11 +422,18 @@ export default class CommandProcessor extends TypedEventEmitter<
 
     executorContext.args = recordArgs;
 
-    this.emit("before_command_trigger", { context: executorContext });
+    try {
+      await executorCommand.trigger(executorContext);
+    } catch (e) {
+      if (this.#options.catchCommandExceptions) {
+        await this.onCatchCommandException?.call(this, e);
+        return;
+      } else {
+        throw e;
+      }
+    }
 
-    await executorCommand.trigger(executorContext);
-
-    this.emit("after_command_trigger", { context: executorContext });
+    await this.afterCommandTrigger?.call(this, executorContext);
   }
 
   async #verifyPreconditions(
@@ -428,10 +441,19 @@ export default class CommandProcessor extends TypedEventEmitter<
     context: CommandContext<unknown>
   ): Promise<boolean> {
     for (const precondition of preconditioned.preconditions) {
-      if (!(await precondition.validate(context))) {
-        return false;
-      }
+      const verified = await precondition.validate(context);
+      if (!verified) return false;
     }
     return true;
   }
+
+  public onCatchCommandException?: (exception: unknown) => Promise<void>;
+
+  public beforeCommandTrigger?: (
+    context: CommandContextOnlyInteractionAndClient
+  ) => Promise<void>;
+
+  public afterCommandTrigger?: (
+    context: CommandContext<unknown>
+  ) => Promise<void>;
 }
