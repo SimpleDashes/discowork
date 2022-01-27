@@ -31,6 +31,10 @@ export default class InteractionUtils {
     interaction: ButtonInteraction,
     options: string | MessagePayload | InteractionUpdateOptions
   ): Promise<void> {
-    await interaction.update(options).catch();
+    try {
+      await interaction.update(options);
+    } catch {
+      // safe.
+    }
   }
 }
