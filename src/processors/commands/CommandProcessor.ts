@@ -214,7 +214,11 @@ export default class CommandProcessor extends TypedEventEmitter<
         await fs.readdir(realPath, {
           withFileTypes: true,
         })
-      ).filter((file) => file.isDirectory());
+      ).filter(
+        (file) =>
+          file.isDirectory() &&
+          !this.#directoryFactory.excludes.includes(file.name)
+      );
       for (const file of sysDirectory) {
         const filePath = path.join(directoryName, file.name);
         if (
