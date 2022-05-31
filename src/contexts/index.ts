@@ -1,2 +1,2 @@
-export {default as DiscordContext} from './DiscordContext';
-export * from './TypedArgs';
+export * from './InteractionContext';
+export * from './TypedArguments';

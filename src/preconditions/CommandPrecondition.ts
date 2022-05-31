@@ -1,10 +1,15 @@
-import type CommandContext from "../commands/interfaces/CommandContext";
-import InteractionUtils from "../utils/InteractionUtils";
+import type {
+  BaseCommandContext,
+  CommandContext,
+} from "../commands/interfaces/CommandContext";
+import { InteractionUtils } from "../utils/InteractionUtils";
 
-export default abstract class CommandPrecondition {
+export abstract class CommandPrecondition {
   public onFailMessage?: (context: CommandContext<unknown>) => string;
 
-  public async validate(context: CommandContext<unknown>): Promise<boolean> {
+  public async validate(
+    context: BaseCommandContext<unknown>
+  ): Promise<boolean> {
     const { interaction } = context;
 
     const validated = await this.validateInternally(context);
@@ -17,6 +22,6 @@ export default abstract class CommandPrecondition {
   }
 
   protected abstract validateInternally(
-    context: CommandContext<unknown>
+    context: BaseCommandContext<unknown>
   ): Promise<boolean>;
 }

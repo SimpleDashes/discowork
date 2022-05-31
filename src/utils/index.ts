@@ -1,2 +1,3 @@
-export {default as InteractionUtils} from './InteractionUtils';
-export {default as MathUtils} from './MathUtils';
+
+export * from './InteractionUtils';
+export * from './MathUtils';

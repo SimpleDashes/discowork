@@ -1,6 +1,6 @@
 import { EventEmitter } from "stream";
 
-export default class AsyncEventEmitter extends EventEmitter {
+export class AsyncEventEmitter extends EventEmitter {
   /**
    * Callbacks all listeners but awaiting for their tasks to be completed.
    * @param eventName The event name.

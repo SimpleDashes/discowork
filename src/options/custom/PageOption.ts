@@ -1,10 +1,10 @@
 import type { CommandInteraction } from "discord.js";
 import { MathUtils } from "../../utils";
 
-import IntegerOption from "../classes/IntegerOption";
+import { IntegerOption } from "../classes/IntegerOption";
 import type { ILazyApply } from "../interfaces/ILazyApply";
 
-export default class PageOption extends IntegerOption implements ILazyApply {
+export class PageOption extends IntegerOption implements ILazyApply {
   public readonly lazyApply: true = true;
   public readonly itemsPerPage: number;
 

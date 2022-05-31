@@ -1,9 +1,8 @@
-import assert from "assert";
 import type { GuildMember, PermissionResolvable } from "discord.js";
-import type CommandContext from "../../commands/interfaces/CommandContext";
-import CommandPrecondition from "../CommandPrecondition";
+import { CommandPrecondition } from "../";
+import type { CommandContext } from "../../commands";
 
-export default class GuildPermissionsPrecondition extends CommandPrecondition {
+export class GuildPermissionsPrecondition extends CommandPrecondition {
   public readonly requiredPermissions: PermissionResolvable;
 
   public constructor(requiredPermissions: PermissionResolvable) {
@@ -15,9 +14,11 @@ export default class GuildPermissionsPrecondition extends CommandPrecondition {
     context: CommandContext<unknown>
   ): Promise<boolean> {
     const { interaction } = context;
-    assert(interaction.inGuild());
-    return (interaction.member as GuildMember).permissions.has(
-      this.requiredPermissions
+    return (
+      interaction.inGuild() &&
+      (interaction.member as GuildMember).permissions.has(
+        this.requiredPermissions
+      )
     );
   }
 }

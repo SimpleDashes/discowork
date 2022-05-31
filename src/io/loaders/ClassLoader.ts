@@ -1,17 +1,23 @@
-import type ClassLoaderResponse from "./ClassLoaderResponse";
+import type { ClassLoaderResponse } from "./ClassLoaderResponse";
 import fs from "fs/promises";
 import path from "path";
-import Extensions from "../extensions/Extensions";
+import { Extensions } from "../extensions/Extensions";
 import { Logger } from "../../container";
-import type Directory from "../directories/Directory";
+import type { Directory } from "../directories/Directory";
 import { pathToFileURL } from "url";
 import { getRootInformation, runtimeType } from "../common";
-import { TypedEventEmitter } from "../../events";
+import { AsyncTypedEventEmitter } from "../../events";
 import type { NewEvent } from "../../events/TypedEventEmitter";
 import type { ConstructorType } from "../../types";
 
-export default class ClassLoader<T> extends TypedEventEmitter<
-  [NewEvent<"import" | "no_default_export" | "wrong_type">]
+export enum ClassLoaderEvents {
+  import = "import",
+  no_default_export = "no_default_export",
+  wrong_type = "wrong_type",
+}
+
+export class ClassLoader<T> extends AsyncTypedEventEmitter<
+  [NewEvent<ClassLoaderEvents>]
 > {
   #klass: ConstructorType<[...never], T>;
   #extension: Extensions = Extensions.JS;
@@ -70,7 +76,7 @@ export default class ClassLoader<T> extends TypedEventEmitter<
             this.#klass.name
           } at ${realPath}`
         );
-        await this.emitAsync("no_default_export");
+        await this.emitAsync(ClassLoaderEvents.no_default_export);
         continue;
       }
 
@@ -87,14 +93,14 @@ export default class ClassLoader<T> extends TypedEventEmitter<
             this.#klass.name
           }`
         );
-        await this.emitAsync("import");
+        await this.emitAsync(ClassLoaderEvents.import);
       } else {
         Logger.error(
           `Failed to import a ${
             klass.name
           } at ${realPath}, didn't match expected type: ${this.#klass.name}`
         );
-        await this.emitAsync("wrong_type");
+        await this.emitAsync(ClassLoaderEvents.wrong_type);
       }
     }
 

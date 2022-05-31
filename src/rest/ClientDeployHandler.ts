@@ -1,26 +1,27 @@
 import type { ApplicationCommandDataResolvable, Guild } from "discord.js";
 import { assertDefinedGet } from "../assertions";
-import type SimpleClient from "../client/SimpleClient";
-import type CommandContext from "../commands/interfaces/CommandContext";
-import DeployHandler from "./DeployHandler";
+import type { JunaClient } from "../client/JunaClient";
+import type { BaseCommandContext } from "../commands/interfaces/CommandContext";
+import { DeployHandler } from "./DeployHandler";
 
-export default class ClientDeployHandler extends DeployHandler {
-  #simpleClient: SimpleClient;
+export class ClientDeployHandler extends DeployHandler {
+  #client: JunaClient;
 
-  public constructor(client: SimpleClient, debug: boolean) {
+  public constructor(client: JunaClient, debug: boolean) {
     super(
       assertDefinedGet(client.user).id,
-      assertDefinedGet(client.options.developmentGuild),
       assertDefinedGet(client.token),
       client.commandProcessor,
-      debug
+      debug,
+      client.options.developmentGuild
     );
-    this.#simpleClient = client;
+
+    this.#client = client;
   }
 
   public async deployCommand(options: {
     commandName: string;
-    context: CommandContext<unknown>;
+    context: BaseCommandContext<unknown>;
     guild?: Guild;
   }): Promise<void> {
     const { commandName, guild, context } = options;
@@ -43,7 +44,7 @@ export default class ClientDeployHandler extends DeployHandler {
         return;
       }
     } else {
-      path = this.#simpleClient.application?.commands;
+      path = this.#client.application?.commands;
     }
 
     await path?.create(command.toJSON() as ApplicationCommandDataResolvable);

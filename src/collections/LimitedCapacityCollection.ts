@@ -3,7 +3,7 @@
  */
 
 import { minutesToSeconds, secondsToMilliseconds } from "date-fns";
-import { Collection } from "discord.js";
+import { Collection } from "@discordjs/collection";
 import { assertDefined } from "../assertions";
 
 /**

@@ -1,4 +1,4 @@
-export default class LocaleResource<S, T> {
+export class LocaleResource<S, T> {
   public readonly locale: S;
   public readonly structure: T;
 

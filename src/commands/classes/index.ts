@@ -1,3 +1,3 @@
-export {default as Command} from './Command';
-export {default as SubCommand} from './SubCommand';
-export {default as SubCommandGroup} from './SubCommandGroup';
+export * from './JunaCommand';
+export * from './JunaSubCommand';
+export * from './JunaSubCommandsGroup';

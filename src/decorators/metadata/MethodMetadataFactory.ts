@@ -1,7 +1,7 @@
 import type { ObjectKeyString } from "./BaseMetadataFactory";
-import BaseMetadataFactory from "./BaseMetadataFactory";
+import { MetadataFactory } from "./BaseMetadataFactory";
 
-export default class MethodMetadataFactory<M> extends BaseMetadataFactory<M> {
+export class MethodMetadataFactory<M> extends MetadataFactory<M> {
   public override getMetadataName<T extends object>(
     target: T,
     name: ObjectKeyString<T>

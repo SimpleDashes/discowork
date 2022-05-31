@@ -1,13 +1,25 @@
-import type { CommandInteraction } from "discord.js";
-import type DiscordContext from "../../contexts/DiscordContext";
+import type { CacheType, CommandInteraction } from "discord.js";
+import type { TypedArguments, WithTypedArguments } from "../../contexts";
+import type { BaseJunaContext } from "../../contexts/InteractionContext";
 
-export default interface CommandContext<A> extends DiscordContext<A> {
-  readonly interaction: CommandInteraction;
+export type CommandContext<A> = BaseJunaContext<CommandInteraction> &
+  WithTypedArguments<A>;
+
+export abstract class BaseCommandContext<A> implements CommandContext<A> {
+  public interaction: CommandInteraction<CacheType>;
+  public arguments!: TypedArguments<A>;
+
+  public constructor(interaction: CommandInteraction) {
+    this.interaction = interaction;
+  }
+
+  public abstract build(): Promise<void>;
 }
 
-type CommandContextOnlyInteractionAndClient = Pick<
-  CommandContext<unknown>,
-  "interaction" | "client"
->;
-
-export type { CommandContextOnlyInteractionAndClient };
+export class DefaultCommandContext extends BaseCommandContext<never> {
+  public async build(): Promise<void> {
+    /**
+     * Ignores.
+     */
+  }
+}

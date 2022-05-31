@@ -1,1 +1,1 @@
-export {default as DiscordOptionHelper} from './DiscordOptionHelper';
+export * from './DiscordOptionHelper';

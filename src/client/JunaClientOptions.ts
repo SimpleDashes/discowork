@@ -1,11 +1,11 @@
 import type { ClientOptions, Snowflake } from "discord.js";
-import type CommandProcessorOptions from "../processors/commands/CommandProcessorOptions";
+import type { CommandProcessorOptions } from "../processors/commands/CommandProcessorOptions";
 
-export default interface SimpleClientOptions
+export interface JunaClientOptions
   extends ClientOptions,
     CommandProcessorOptions {
   debug?: boolean;
   token?: string;
   developmentGuild?: Snowflake;
-  ownerIDS: Snowflake[];
+  botAdministrators: Snowflake[];
 }

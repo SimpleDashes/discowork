@@ -1,4 +1,4 @@
-import MethodMetadataFactory from "./metadata/MethodMetadataFactory";
+import { MethodMetadataFactory } from "./metadata/MethodMetadataFactory";
 
 export class MethodDecoratorFactories {
   public static readonly RunOnce = new MethodMetadataFactory<{ ran: true }>();

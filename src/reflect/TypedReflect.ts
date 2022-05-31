@@ -1,4 +1,4 @@
-export default class TypedReflect {
+export class TypedReflect {
   public static defineProperty<T extends object>(
     target: T,
     propertyKey: keyof T,

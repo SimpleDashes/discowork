@@ -1,6 +1,6 @@
 import path from "path";
 
-export default class Directory {
+export class Directory {
   protected path: string;
 
   /**

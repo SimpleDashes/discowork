@@ -1,9 +1,9 @@
-import type CommandContext from "../../commands/interfaces/CommandContext";
-import CommandPrecondition from "../CommandPrecondition";
+import type { BaseCommandContext } from "../../commands/interfaces/CommandContext";
+import { CommandPrecondition } from "../CommandPrecondition";
 
-export default class RequiresSubCommandsGroupsPrecondition extends CommandPrecondition {
+export class RequiresSubCommandsGroupsPrecondition extends CommandPrecondition {
   protected async validateInternally(
-    context: CommandContext<unknown>
+    context: BaseCommandContext<unknown>
   ): Promise<boolean> {
     return !!context.interaction.options.getSubcommandGroup(false);
   }

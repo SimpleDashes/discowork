@@ -1,6 +1,6 @@
-import BaseMetadataFactory from "./BaseMetadataFactory";
+import { MetadataFactory } from "./BaseMetadataFactory";
 
-export default class ClassMetadataFactory<M> extends BaseMetadataFactory<M> {
+export class ClassMetadataFactory<M> extends MetadataFactory<M> {
   static #NAME = "KLASS_METADATA";
 
   public override getMetadataName<T extends object>(target: T): string {

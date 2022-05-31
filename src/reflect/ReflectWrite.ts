@@ -1,4 +1,4 @@
-import TypedReflect from "./TypedReflect";
+import { TypedReflect } from "./TypedReflect";
 
 type GetterSetter<T> = {
   get: () => T;

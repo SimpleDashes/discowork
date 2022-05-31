@@ -1,11 +1,11 @@
-import "reflect-metadata"
+import "reflect-metadata";
 
 import type { Snowflake } from "discord-api-types";
 import { SnowflakeUtil, Collection } from "discord.js";
 
 export type ObjectKeyString<T> = keyof T & string;
 
-export default abstract class MetadataFactory<M> {
+export abstract class MetadataFactory<M> {
   protected readonly id = SnowflakeUtil.generate();
   protected readonly ids = new Collection<unknown, Snowflake>();
 

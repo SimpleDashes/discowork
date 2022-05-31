@@ -1,5 +1,5 @@
-import type CommandPrecondition from "../CommandPrecondition";
+import type { CommandPrecondition } from "../CommandPrecondition";
 
-export default interface CommandWithPreconditions {
+export interface CommandWithPreconditions {
   preconditions: CommandPrecondition[];
 }

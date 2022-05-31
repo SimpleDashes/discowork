@@ -5,7 +5,7 @@ import type {
   RESTPostAPIApplicationCommandsJSONBody,
 } from "discord-api-types";
 
-export default interface CommandInterface {
+export interface CommandInterface {
   /**
    * The name of the command.
    */

@@ -1,16 +1,16 @@
 import { Collection } from "discord.js";
 import { assertDefinedGet } from "../assertions";
 import { Logger } from "../container";
-import type ClassLoader from "../io/loaders/ClassLoader";
-import type Locale from "./Locale";
-import type LocaleResource from "./resources/LocaleResource";
-import type ResourceValue from "./resources/ResourceValue";
+import type { ClassLoader } from "../io/loaders/ClassLoader";
+import type { Locale } from "./Locale";
+import type { LocaleResource } from "./resources/LocaleResource";
+import type { ResourceValue } from "./resources/ResourceValue";
 
 export type VariableSettings = {
   prefix: string;
   suffix: string;
 };
-export default abstract class Localizer<
+export abstract class Localizer<
   S extends Locale,
   T,
   R extends LocaleResource<S, T>

@@ -1,1 +1,1 @@
-export * from './Defined';
+export * from './AssertDefined';

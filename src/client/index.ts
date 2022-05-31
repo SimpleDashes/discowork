@@ -1,2 +1,2 @@
-export {default as SimpleClient} from './SimpleClient';
-export {default as SimpleClientOptions} from './SimpleClientOptions';
+export * from './JunaClient';
+export * from './JunaClientOptions';

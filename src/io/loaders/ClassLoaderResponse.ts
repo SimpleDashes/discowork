@@ -1,8 +1,6 @@
-import type Directory from "../directories/Directory";
+import type { Directory } from "../directories/Directory";
 
-type ClassLoaderResponse<T> = {
+export type ClassLoaderResponse<T> = {
   directory: Directory;
   object: T;
 };
-
-export default ClassLoaderResponse;

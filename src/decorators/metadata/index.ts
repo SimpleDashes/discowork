@@ -1,3 +1,3 @@
 export * from './BaseMetadataFactory';
-export {default as ClassMetadataFactory} from './ClassMetadataFactory';
-export {default as MethodMetadataFactory} from './MethodMetadataFactory';
+export * from './ClassMetadataFactory';
+export * from './MethodMetadataFactory';

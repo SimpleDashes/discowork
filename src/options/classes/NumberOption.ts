@@ -1,8 +1,8 @@
 import { SlashCommandNumberOption } from "@discordjs/builders";
 import type { CommandInteraction } from "discord.js";
-import type IDiscordOption from "../interfaces/IDiscordOption";
+import type { IDiscordOption } from "../interfaces/IDiscordOption";
 
-export default class NumberOption
+export class NumberOption
   extends SlashCommandNumberOption
   implements IDiscordOption<number>
 {

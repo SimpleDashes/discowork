@@ -1,15 +1,14 @@
+import type { CommandInterface } from "./CommandInterface";
+import type { CommandContext } from "./CommandContext";
+import type { ConstructorType } from "../../types/ConstructorType";
+import type { CommandInteraction } from "discord.js";
 
-import type CommandInterface from "./CommandInterface";
-import type CommandContext from "./CommandContext";
-import type { CommandContextOnlyInteractionAndClient } from "./CommandContext";
-import ConstructorType from "../../types/ConstructorType";
-
-export default interface WorkerCommand<A, CTX extends CommandContext<A>>
+export interface WorkerCommand<A, CTX extends CommandContext<A>>
   extends CommandInterface {
   /**
    * The arguments created by {@link createArguments}
    */
-  args: A;
+  arguments: A;
 
   /**
    * Runs the command on the provided context.
@@ -17,14 +16,12 @@ export default interface WorkerCommand<A, CTX extends CommandContext<A>>
   trigger: (context: CTX) => Promise<void>;
 
   /**
-   * Provides the context to be passed for the {@link trigger} method.
+   * Provides the context constructor to be passed for the {@link trigger} method.
    */
-  contextConstructor: () =>
-    | ConstructorType<[CommandContextOnlyInteractionAndClient], CTX>
-    | undefined;
+  getContextConstructor: () => ConstructorType<[CommandInteraction], CTX>;
 
   /**
-   * Provides the arguments to be passed for the {@link contextConstructor} arguments.
+   * Provides the arguments to be passed for the {@link getContextConstructor} arguments.
    */
   createArguments: () => A;
 }

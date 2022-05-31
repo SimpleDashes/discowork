@@ -1,4 +1,4 @@
-export default interface IHasNameAndDescription {
+export interface IHasNameAndDescription {
   name: string;
   description: string;
 }

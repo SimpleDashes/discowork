@@ -1,1 +1,1 @@
-export {default as PageOption} from './PageOption';
+export * from './PageOption';

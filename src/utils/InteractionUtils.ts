@@ -11,7 +11,7 @@ import type {
   WebhookEditMessageOptions,
 } from "discord.js";
 
-export default class InteractionUtils {
+export class InteractionUtils {
   public static async reply(
     interaction:
       | CommandInteraction<CacheType>

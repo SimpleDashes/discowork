@@ -1,9 +1,9 @@
 import fs from "fs/promises";
 import path from "path";
 import { getRootInformation } from "../common";
-import Directory from "./Directory";
+import { Directory } from "./Directory";
 
-export default class DirectoryFactory {
+export class DirectoryFactory {
   public readonly root: string;
   public readonly directories: Directory[] = [];
   public readonly excludes: string[];

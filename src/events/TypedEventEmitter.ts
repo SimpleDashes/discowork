@@ -1,6 +1,6 @@
 import type { Awaitable } from "discord.js";
 import { EventEmitter } from "stream";
-import AsyncEventEmitter from "./AsyncEventEmitter";
+import { AsyncEventEmitter } from "./AsyncEventEmitter";
 
 export type Event<A extends unknown[] = []> = {
   name: string;
@@ -12,7 +12,7 @@ export type NewEvent<NAME extends string, ARGS extends unknown[] = []> = {
   args: ARGS;
 } & Event<ARGS>;
 
-export default class TypedEventEmitter<
+export class AsyncTypedEventEmitter<
   E extends Event<unknown[]>[]
 > extends AsyncEventEmitter {
   public override emit<T extends E[number]>(

@@ -1,8 +1,8 @@
 import { Chance } from "chance";
-import Localizer from "../Localizer";
-import type {VariableSettings} from "../Localizer"
+import { Localizer } from "../Localizer";
+import type { VariableSettings } from "../Localizer";
 
-class ResourceValue<A extends string = never> {
+export class ResourceValue<A extends string = never> {
   static #CHANCE = Chance();
 
   public args: A[] = [];
@@ -39,5 +39,3 @@ class ResourceValue<A extends string = never> {
     this.args = args;
   }
 }
-
-export default ResourceValue;

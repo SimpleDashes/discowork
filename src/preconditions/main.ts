@@ -1,27 +1,27 @@
 import type { PermissionResolvable } from "discord.js";
-import type CommandPrecondition from "./CommandPrecondition";
-import GuildPermissionsPreconditions from "./implementations/GuildPermissionsPreconditions";
-import type CommandWithPreconditions from "./interfaces/CommandWithPreconditions";
-import type OwnerPrecondition from "./implementations/OwnerPrecondition";
-import RequiresGuildPrecondition from "./implementations/RequiresGuildPrecondition";
-import RequiresSubCommandsPrecondition from "./implementations/RequiresSubCommandsPrecondition";
-import RequiresSubCommandsGroupsPrecondition from "./implementations/RequiresSubCommandsGroupsPrecondition";
-import type CommandInterface from "../commands/interfaces/CommandInterface";
-import ConstructorType from "../types/ConstructorType";
+import type { CommandPrecondition } from "./CommandPrecondition";
+
+import type { CommandWithPreconditions } from "./interfaces/CommandWithPreconditions";
+import type { BotAdministratorPrecondition } from "./implementations/BotAdministratorPrecondition";
+import { RequiresGuildPrecondition } from "./implementations/RequiresGuildPrecondition";
+import { RequiresSubCommandsPrecondition } from "./implementations/RequiresSubCommandsPrecondition";
+import { RequiresSubCommandsGroupsPrecondition } from "./implementations/RequiresSubCommandsGroupsPrecondition";
+import type { CommandInterface } from "../commands/interfaces/CommandInterface";
+import type { ConstructorType } from "../types/ConstructorType";
+import { GuildPermissionsPrecondition } from "./implementations";
 
 export class PreconditionUtils {
   public static commandContainsPreconditions(
     command: unknown
   ): command is CommandWithPreconditions {
-    return (
-      (command as unknown as CommandWithPreconditions).preconditions !==
-      undefined
+    return Array.isArray(
+      (command as unknown as CommandWithPreconditions).preconditions
     );
   }
 }
 
 export class SetupPrecondition {
-  public static setup(owner: OwnerPrecondition): void {
+  public static setup(owner: BotAdministratorPrecondition): void {
     this.setupOwnerPrecondition(owner);
     this.setupGuildPrecondition();
     this.setupSubCommandPrecondition();
@@ -29,7 +29,9 @@ export class SetupPrecondition {
     this.setupGuildPermissionsPrecondition();
   }
 
-  public static setupOwnerPrecondition(condition: OwnerPrecondition): void {
+  public static setupOwnerPrecondition(
+    condition: BotAdministratorPrecondition
+  ): void {
     Preconditions.OwnerOnly = condition;
   }
 
@@ -54,22 +56,22 @@ export class SetupPrecondition {
   public static setupGuildPermissionsPrecondition(
     creator = (
       permissions: PermissionResolvable
-    ): GuildPermissionsPreconditions =>
-      new GuildPermissionsPreconditions(permissions)
+    ): GuildPermissionsPrecondition =>
+      new GuildPermissionsPrecondition(permissions)
   ): void {
     Preconditions.WithPermission = creator;
   }
 }
 
 export class Preconditions {
-  public static OwnerOnly: OwnerPrecondition;
+  public static OwnerOnly: BotAdministratorPrecondition;
   public static GuildOnly: RequiresGuildPrecondition;
   public static RequiresSubCommand: RequiresSubCommandsPrecondition;
   public static RequiresSubCommandGroup: RequiresSubCommandsGroupsPrecondition;
   public static WithPermission = (
     permissions: PermissionResolvable
-  ): GuildPermissionsPreconditions => {
-    return new GuildPermissionsPreconditions(permissions);
+  ): GuildPermissionsPrecondition => {
+    return new GuildPermissionsPrecondition(permissions);
   };
 }
 
@@ -85,7 +87,7 @@ function CommandPreconditions(...preconditions: CommandPrecondition[]) {
     const guildPrecondition = maybeGuildPrecondition ?? Preconditions.GuildOnly;
 
     if (
-      preconditions.find((c) => c instanceof GuildPermissionsPreconditions) &&
+      preconditions.find((c) => c instanceof GuildPermissionsPrecondition) &&
       !preconditions.includes(guildPrecondition)
     ) {
       preconditions.push(guildPrecondition);

@@ -1,1 +1,1 @@
-export {default as CommandWithPreconditions} from './CommandWithPreconditions';
+export * from './CommandWithPreconditions';
